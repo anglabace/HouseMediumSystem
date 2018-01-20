@@ -1,0 +1,16 @@
+package dao;
+
+import pojo.ClientTrail;
+
+public interface ClientTrailDao {
+	/**
+	 * 根据员工Id获取当月跟进客源数
+	 */
+	public int findCurrentClientTrailByStaffId(int staffId);
+	
+	/**
+	 * 添加客户跟进记录
+	 */
+	public void addClientTrail(ClientTrail clientTrail);
+}
+

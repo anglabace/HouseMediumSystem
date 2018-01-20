@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>   
+<!DOCTYPE mapper   
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"  
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="dao.HouseResourceDao">
+<resultMap type="houseResource" id="houseResourceType">
+	<id property="houseResource_id" column="houseResource_id" />
+	<result property="floor_" column="floor_"/>
+	<result property="ceil_" column="ceil_"/>
+	<result property="doorplate" column="doorplate"/>
+	<result property="room" column="room"/>
+	<result property="hall" column="hall"/>
+	<result property="toilet" column="toilet"/>
+	<result property="balcony" column="balcony"/>
+	<result property="kitchen" column="kitchen"/>
+	<result property="tier" column="tier"/>
+	<result property="total_tiers" column="total_tiers"/>
+	<result property="total_price" column="total_price"/>
+	<result property="build_areas" column="build_areas"/>
+	<result property="inside_areas" column="inside_areas"/>
+	<result property="publishTime" column="publishTime"/>
+	<result property="houseResource_title" column="houseResource_title"/>
+	<result property="houseResource_describe" column="houseResource_describe"/>
+	<result property="application_id" column="application_id"/>
+	<result property="adornment_id" column="adornment_id"/>
+	<result property="direction_id" column="direction_id"/>
+	<result property="houseAttribute_id" column="houseAttribute_id"/>
+	<result property="owner_id" column="owner_id"/>
+	<result property="neighborHood_Id" column="neighborHood_Id"/>
+	<result property="staff_id" column="staff_id"/>
+	<result property="houseConfigure" column="houseConfigure"/>
+	<result property="rent" column="rent"/>
+	<result property="type" column="type_"/>
+	<result property="status" column="status"/>
+	<association property="neighborHood" javaType="pojo.NeighborHood">
+		<id property="neighborHood_Id" column="neighborhood_id"/>
+		<result property="neighborHood_Name" column="neighborHood_Name"/>
+	</association> 
+	<association property="owner" javaType="pojo.Owner">
+		<id property="owner_id" column="owner_id"/>
+		<result property="owner_name" column="owner_name"/>
+	</association> 
+</resultMap>
+	<insert id="addHouse"  parameterType="houseResource">
+		insert into HouseResource(HouseResource_id,floor_) values(HouseResource_id.nextval,#{floor_})
+	</insert>
+	<!-- 根据员工Id查询当月新增出售房 -->
+	<select id="findCurrentBuyHouseByStaffId" resultType="java.lang.Integer">
+		select count(*) from HouseResource where type_=2 and to_char(publishTime,'yyyymm')=to_char(sysdate,'yyyymm') and staff_id=#{0}
+	</select>
+	<!-- 根据员工Id查询当月新增出租房 -->
+	<select id="findCurrentLeaseHouseByStaffId" resultType="java.lang.Integer">
+		select count(*) from HouseResource where type_=1 and to_char(publishTime,'yyyymm')=to_char(sysdate,'yyyymm') and staff_id=#{0}
+	</select>
+	<select id="findSemesterCountHouseByStaffId" resultType="java.lang.Integer">
+		select count(*) from HouseResource where staff_id =#{0} and publishTime between add_months(sysdate,-6) and sysdate
+	</select>
+	<!-- 根据员工id查询房源信息 -->
+	<select id="findHouseResourceInfos" resultType="houseResource">
+		select * from HouseResource where staff_id=#{0}
+	</select>
+	<!-- 根据员工Id查询出售房源信息 -->
+	<select id="findSellHouseResourceInfos" resultMap="houseResourceType">
+		select * from(select rownum as rn ,a.* from(select* from HouseResource inner join neighborhood on houseresource.neighborhood_id=neighborhood.neighborhood_id 
+		inner join owner on houseresource.owner_id = owner.owner_id where type_=2 and HouseResource.staff_id=#{0}
+		order by houseresource.publishtime desc)a) where rn between #{1} and #{2}	
+	</select>
+	<!-- 根据员工Id查询出售房源总数 -->
+	<select id="findSellCountHouseResource" resultType="java.lang.Integer">
+		select count(*) from HouseResource where type_=2 and staff_id=#{0}
+	</select>
+	<!-- 根据员工Id查询出租房源信息 -->
+	<select id="findLeaseHouseResourceInfos" resultMap="houseResourceType">
+		 select* from HouseResource  inner join neighborhood on houseresource.neighborhood_id=neighborhood.neighborhood_id where type_=1 and HouseResource.staff_id=#{0}
+	</select>
+	<!-- 修改房源的员工id -->
+	<update id="updateStaffIdInHouseResource">
+		update houseResource set staff_id=#{staff_id} where staff_id=#{0}
+	</update>
+</mapper>

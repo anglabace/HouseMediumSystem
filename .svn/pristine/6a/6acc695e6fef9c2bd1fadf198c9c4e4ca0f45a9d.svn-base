@@ -1,0 +1,59 @@
+package controller;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import pojo.Area;
+import pojo.City;
+import pojo.NeighborHood;
+import pojo.Street;
+import pojo.Villege;
+import service.NeighborhoodService;
+
+/**
+ * 小区【楼盘】
+ * @author admin
+ *
+ */
+@Controller
+public class NeighborHoodController {
+	@Autowired
+	private NeighborhoodService neighborhoodService;
+	
+	@RequestMapping("showAllNeighborList")
+	public String showAllNeighborList(String neighborHood_Name,Integer street_Id,Integer area_id ,ModelMap map){
+		System.out.println("页面加载ajax");
+		if(neighborHood_Name==null){
+			neighborHood_Name="";
+		}
+		if(street_Id==null&&area_id==null){
+			List<Villege> villegeList=new ArrayList<>();
+			List<NeighborHood> listNeighborHood=neighborhoodService.findAllNeighborhood("%"+neighborHood_Name+"%");
+			for(NeighborHood t:listNeighborHood){
+				Villege villege=new Villege();
+				villege.setNeighborHood(t);	
+				villege.setStreet(t.getStreet());
+				villege.setArea(t.getStreet().getArea());
+				System.out.println("字符串");
+				System.out.println(t.getStreet().getArea().getCity().getCity_Name());
+				villege.setCity(t.getStreet().getArea().getCity());
+				villegeList.add(villege);
+			}
+			map.put("villegeList", villegeList);
+		}
+		return "showAllNeighborList";
+	}
+	
+	@RequestMapping("main_showAllNeighborList")
+	public String main_showAllNeighborList(){
+		System.out.println("进入到员工列表");
+		return "main_showAllNeighborList";
+	}
+	
+}

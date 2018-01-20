@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>   
+<!DOCTYPE mapper   
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"  
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="dao.NoticeDao">
+	<resultMap type="pojo.Notice" id="noticeType">
+			<id property="notice_Id" column="notice_Id"/>
+			<result property="notice_title" column="notice_title"/>
+			<result property="notice_content" column="notice_content"/>
+			<result property="notice_time" column="notice_time"/>
+			<result property="staff_id" column="staff_id"/>
+	</resultMap>
+	<!-- 查询最新的公告-->
+	<select id="findNewNotice" resultMap="noticeType">
+		select * from Notice where Notice_time=(select max(Notice_time) from Notice)
+	</select>
+	<insert id="addNotice" parameterType="pojo.Notice">
+		insert into Notice values(Notice_Id.Nextval,#{0},#{1},sysdate,#{2})
+	</insert>
+</mapper>

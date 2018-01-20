@@ -1,0 +1,35 @@
+package dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import pojo.Staff;
+import pojo.StaffForm;
+
+/**
+ * 员工dao类
+ * @author admin 郑世杰
+ *
+ */
+public interface StaffDao {
+	
+	//通过员工手机号码查找用户[用于登陆]
+	public Staff findStaffByName(String telephone);
+	//通过员工ID查找员工[用于查看个人基本资料]
+	public Staff findStaffById(int staffId);
+	//根据员工修改员工信息
+	public void updateStaffByStaffId(StaffForm staffForm);
+	// 
+
+	/**
+	 * 分页查找员工信息
+	 */
+	public List<Staff> findAnotherStaffByPage(int staff_id,int min,int max);
+	/**
+	 * 查找其他员工数量
+	 * @param staff_id
+	 * @return
+	 */
+	public int findAnotherStaffCount(@Param("id")int staff_id);	
+}

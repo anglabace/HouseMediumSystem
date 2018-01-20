@@ -1,0 +1,85 @@
+package controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import pojo.Client;
+import pojo.ClientRequirement;
+import pojo.HouseAdornment;
+import pojo.HouseApplication;
+import pojo.HouseDirection;
+import service.ClientService;
+import service.HouseAdornmentService;
+import service.HouseApplicationService;
+import service.HouseDirectionService;
+
+/**
+ * 客户的业务类
+ * @author Chris
+ *
+ */
+@Controller
+public class ClientController {
+	
+	@Autowired
+	private ClientService clientService;
+	@Autowired
+	private HouseApplicationService houseApplicationService;
+	@Autowired
+	private HouseAdornmentService houseAdornmentService;
+	@Autowired
+	private HouseDirectionService houseDirectionService;
+	/**
+	 * 跳转客户添加页面
+	 */
+	@RequestMapping("main_addClient")
+	public String skipToAddPage(ModelMap map){
+		//找到所有房屋用途下拉选项框
+		List<HouseApplication> houseAppSelection = houseApplicationService.findAllHouseAppSelection();
+		//找到所有房屋装饰下拉选项框
+		List<HouseAdornment> houseAdorSelection = houseAdornmentService.findAllAdorSelection();
+		List<HouseDirection> houseDireSelection = houseDirectionService.findAllHouseDirSelection();//找到所有房屋朝向下拉选项框
+		houseDirectionService.findAllHouseDirSelection();
+		map.put("houseAppSelection", houseAppSelection);
+		map.put("houseAdorSelection", houseAdorSelection);
+		map.put("houseDireSelection", houseDireSelection);
+		return "main_addClient";
+	}
+	
+	/**
+	 * 跳转至客户列表页面
+	 */
+	@RequestMapping("main_clientList")
+	public String skipToClientList(int staff_id,ModelMap map){
+		//根据登陆员工id查询员工所负责的所有客户列表
+		List<Client> clientList = searchClientList(staff_id);
+		map.put("clientList", clientList);
+		return "main_clientList";
+	}
+	/**
+	 * 添加客户信息
+	 */
+	@RequestMapping("addClientInfo")
+	public void addClientInfo(Client client,ClientRequirement clientReq){
+		//添加客户的基本信息
+		clientService.addClientBaseInfo(client);
+		//根据手机号和姓名查询对象
+		Client findClient = clientService.findClientByNameAndTel(client.getClient_name(), client.getTelephone());
+		System.out.println(findClient.getClient_id());
+		clientReq.setClient_id(findClient.getClient_id());
+		//添加客户的需求信息
+		clientService.addClientReqInfo(clientReq);
+	}
+	
+	/**
+	 * 查询登陆员工的所有客户列表
+	 */
+	public List<Client> searchClientList(int staff_id){
+		return clientService.findAllClientByStaffId(staff_id);
+	}
+	
+}

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>   
+<!DOCTYPE mapper   
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"  
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="dao.ContractDao">
+	<resultMap type="pojo.Contract" id="conType">
+		<id property="Contract_id" column="contract_id"/>
+		<result property="Contract_type" column="contract_type"/>
+	</resultMap>
+	<insert id="addSellContract" parameterType="pojo.Contract">
+		insert into contract values(contract_id.nextval,#{Bid},#{Contract_price},#{Contract_Time},#{Contract_remark},
+		1,null,null,#{Contract_type},#{Staff_id},#{Client_id},#{house_id})
+	</insert>
+	<insert id="addRentContract" parameterType="pojo.Contract">
+		insert into contract values(contract_id.nextval,null,#{Contract_price},#{Contract_Time},#{Contract_remark},
+		1,#{lease},#{Start_day},#{Contract_type},#{Staff_id},#{Client_id},#{house_id})
+	</insert>
+	<!-- 合同类型  1出售合同 2出租合同 -->
+	<select id="findSellContractById" resultMap="conType">
+		select * from contract where staff_id = #{0} and contract_type = 1
+	</select>
+	<select id="findRentContractById" resultMap="conType">
+		select * from contract where staff_id = #{0} and contract_type = 2
+	</select>
+</mapper>

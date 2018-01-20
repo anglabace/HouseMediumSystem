@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>   
+<!DOCTYPE mapper   
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"  
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="dao.HouseResourceDao">
+
+	<insert id="addHouse"  parameterType="houseResource">
+		insert into HouseResource(HouseResource_id,floor_) values(HouseResource_id.nextval,#{floor_})
+	</insert>
+	
+	
+	
+</mapper>

@@ -1,0 +1,26 @@
+package controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+/**
+ * 客户的业务类
+ * @author Chris
+ *
+ */
+@Controller
+public class ClientController {
+	
+	/**
+	 * 跳转客户添加页面
+	 */
+	@RequestMapping("main_addClient")
+	public String skipToAddPage(){
+		return "main_addClient";
+	}
+	
+	/**
+	 * 
+	 */
+	
+}

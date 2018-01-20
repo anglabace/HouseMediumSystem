@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>   
+<!DOCTYPE mapper   
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"  
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="dao.AreaDao">
+	<resultMap type="pojo.Area" id="areaType">
+			<id property="area_Id" column="area_Id"/>
+			<result property="area_Name" column="area_Name"/>
+			<result property="city_id" column="city_id"/>
+	</resultMap>
+	
+	<resultMap type="pojo.Area" id="areaType2">
+		<id property="area_Id" column="area_Id"/>
+		<result property="area_Name" column="area_Name"/>
+		<association
+		 property="city"
+		 javaType="pojo.City"
+		 select="dao.CityDao.findCityByCityId"
+		 column="city_Id"
+		 >
+		</association>
+	</resultMap>
+	<!-- 通过区域Id返回区域对象-->
+	<select id="findAreaById" resultMap="areaType">
+		select * from Area	where area_Id=#{0}
+	</select>
+	<!--  -->
+	<select id="findAreaByAreaId" resultMap="areaType2">
+		select * from Area	where area_Id=#{0}
+	</select>
+	<!--  通过市名字找区集合 -->
+	<select id="findAreaListBycityName" resultType="area">
+		select * from  area where city_Id  = (select city_id from city where city_name = #{0})
+	</select>
+	
+	<!-- 通过街道名字找区id -->
+	<select id="findAreaIdByStreetName" resultType="java.lang.Integer">
+		select area_id from street where street_name = #{0}
+	</select>
+	
+</mapper>

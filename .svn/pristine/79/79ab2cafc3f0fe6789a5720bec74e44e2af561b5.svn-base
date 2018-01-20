@@ -1,0 +1,163 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<link href="./css/client.css" type="text/css" rel="stylesheet" />
+</head>
+<body>
+<div class="main">
+	<h2>发布客源</h2>
+	<div class="nav">基本信息</div>
+	<form action="" method="post">
+		<ul class="list">
+			<li>
+				<span class="title"><i style="color:red;">*&nbsp;</i>&nbsp;姓&nbsp;&nbsp;&nbsp;&nbsp;名&nbsp;&nbsp;</span>
+				<input type="text" class="intext" >
+			</li>			
+			<li>
+				<label>
+					<i class="red">*</i>
+					客户状态
+				</label>
+				<select class="select">
+					<option>未处理</option>
+					<option>求购中</option>
+					<option>求租中</option>
+					<option>已成交</option>
+					<option>已搁置</option>
+				</select>
+			</li>						
+			<li>
+				<label>
+					<i class="red">*</i>
+					客户类型
+				</label>
+				<select class="select">
+					<option>求购</option>
+					<option>求租</option>			
+				</select>
+			</li>	
+			<li>
+				<span class="title"><i style="color:red;">*&nbsp;</i>&nbsp;性&nbsp;&nbsp;&nbsp;&nbsp;别&nbsp;&nbsp;</span>
+				<input type="radio" name="sex">男&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="radio" name="sex">女
+			</li>			
+			<li>
+				<span class="title"><i style="color:red;">*&nbsp;</i>&nbsp;电&nbsp;&nbsp;&nbsp;&nbsp;话&nbsp;&nbsp;</span>
+				<input type="text" class="intext" >
+			</li>
+			
+			<li>
+				<span class="title"><i style="color:red;">*&nbsp;</i>&nbsp;微&nbsp;&nbsp;&nbsp;&nbsp;信&nbsp;&nbsp;</span>
+				<input type="text" class="intext" >
+			</li>				
+						
+			<li>
+				<span class="title"><i style="color:red;">*&nbsp;</i>QQ号码&nbsp;</span>
+				<input type="text" class="intext" >
+			</li>
+			
+			<li>
+				<span class="title"><i style="color:red;">*&nbsp;</i>&nbsp;邮&nbsp;&nbsp;&nbsp;&nbsp;箱&nbsp;&nbsp;</span>
+				<input type="text" class="intext" >
+			</li>
+			
+			<li>
+				<span class="title"><i style="color:red;">*&nbsp;</i>联系地址&nbsp;</span>
+				<input type="text" class="intext" >
+			</li>				
+		</ul>
+	
+	<div class="nav">房源需求</div>
+		<ul>
+			<li style="width:680px;">
+				<span class="title"><i style="color:red;">*&nbsp;</i>城市要求&nbsp;</span>
+				<select class="select">
+				<option>不限区域</option>
+				</select>
+				&nbsp;&nbsp;
+				<select class="select">
+				<option>地段要求</option>
+				</select>
+				<input type="text" class="intext" placeholder="详细地段说明" style="width: 250px; ">
+			</li>
+			<br>
+			<li>
+				<label>
+					<i class="red">*</i>
+					房源类型
+				</label>
+				<!-- 动态加载 -->
+				<select class="select">
+					<option>自建房</option>
+					<option>商铺</option>
+				</select>
+			</li>
+			
+			<li>
+				<span class="title">&nbsp;&nbsp;&nbsp;户&nbsp;&nbsp;&nbsp;&nbsp;型&nbsp;&nbsp;</span>
+				<input type="text" class="shorttext">&nbsp;&nbsp;室&nbsp;&nbsp;<input type="text" class="shorttext">&nbsp;&nbsp;厅&nbsp;&nbsp;<input type="text" class="shorttext">&nbsp;&nbsp;卫
+			</li>
+			<br>
+			<li>
+				<span class="title">&nbsp;&nbsp;&nbsp;&nbsp;楼层区间&nbsp;</span>
+				<input type="text" class="shorttext">&nbsp;&nbsp;-&nbsp;&nbsp;<input type="text" class="shorttext">楼
+			</li>
+			<li>
+				<span class="title">&nbsp;&nbsp;&nbsp;&nbsp;价格区间&nbsp;</span>
+				<input type="text" class="shorttext">&nbsp;&nbsp;-&nbsp;&nbsp;<input type="text" class="shorttext">万
+			</li>
+			<li>
+				<span class="title">&nbsp;&nbsp;&nbsp;&nbsp;面积区间&nbsp;</span>
+				<input type="text" class="shorttext">&nbsp;&nbsp;-&nbsp;&nbsp;<input type="text" class="shorttext">平
+			</li>	
+			<li>
+				<label>
+					&nbsp;&nbsp;&nbsp;&nbsp;装&nbsp;&nbsp;&nbsp;&nbsp;修&nbsp;&nbsp;
+				</label>
+				<!-- 动态加载 -->
+				<select class="select">
+					<option>普通装修</option>
+					<option>精装修</option>
+				</select>
+			</li>
+			<li>
+				<label>
+					&nbsp;&nbsp;&nbsp;&nbsp;朝&nbsp;&nbsp;&nbsp;&nbsp;向&nbsp;&nbsp;
+				</label>
+				<!-- 动态加载 -->
+				<select class="select">
+					<option>南北通透</option>
+					<option>东</option>
+				</select>
+			</li>
+			<li>
+				<label>
+					付款方式
+				</label>
+				<select class="select">
+					<option>商贷</option>
+					<option>补按揭</option>
+					<option>抵押贷</option>
+					<option>公积金</option>
+					<option>其他</option>
+				</select>
+			</li>
+			<li>
+				<span class="title" style="vertical-align: top">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备&nbsp;&nbsp;&nbsp;&nbsp;注&nbsp;&nbsp;</span>
+				<textarea rows="10" cols="30"></textarea>
+			</li>					
+		</ul>
+		<ul>
+				<div class="saveBtn">
+				保存
+				</div>
+		</ul>
+	</form>
+</div>
+	
+</body>
+</html>

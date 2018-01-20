@@ -1,0 +1,39 @@
+package controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttributes;
+
+import pojo.Staff;
+import pojo.User;
+import service.StaffService;
+import service.UserService;
+@SessionAttributes("loginStaff")
+@Controller
+public class StaffController {
+	@Autowired
+	private StaffService staffService;
+	
+	@RequestMapping("staff_login")
+	public String login(String telephone, String pwd, ModelMap map){
+		System.out.println("staff_login");
+		Staff staff = staffService.findStaffByName(telephone);
+		if(staff != null){
+			if(staff.getStaff_pwd().equals(pwd)){
+				//写入session
+				map.put("loginStaff", staff);
+			}
+			else{
+				map.put("error", "密码错误!");
+				return "../../index";
+			}
+		}
+		else{
+			map.put("error", " 不存在该员工!");
+			return "../../index";
+		}
+		return "index";
+	}
+}

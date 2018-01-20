@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>   
+<!DOCTYPE mapper   
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"  
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="dao.ClientDao">
+	
+	<resultMap type="client" id="searchClientType">
+			<result property="client_name" column="client_name"/>
+			<result property="client_status" column="client_status"/>
+		<!-- 配置一对多映射 -->
+		<collection property="clientReqList" ofType="clientReq">
+			<result property="client_type" column="client_type" />		
+			<result property="siteRequirement" column="siteRequirement"/>
+			<result property="min_area" column="min_area" />
+			<result property="max_area" column="max_area" />	
+			<result property="min_price" column="min_price"/>
+			<result property="max_price" column="max_price"/>
+		</collection>								
+	</resultMap>
+	
+	<!-- 添加客户基本信息 -->
+	<insert id="addClientBaseInfo" parameterType="client">
+		insert into client values(client_id.nextval,#{client_name},#{telephone},#{sex},#{address},#{wechat},#{QQ},#{email},#{client_status},#{staff_id},sysdate)
+	</insert>
+
+	<!-- 根据客户名及手机号查询单个客户 -->
+	<select id="findClientByNameAndTel" resultType="client">
+		select * from client where client_name=#{0} and telephone=#{1}
+	</select>
+	<!-- 添加客户需求信息 -->
+	<insert id="addClientReqInfo" parameterType="clientReq">
+		insert into clientRequirement values(client_requirement_id.nextval,#{client_type},#{room},#{hall},#{toilet},#{min_tier},#{max_tier},#{min_price},#{max_price},#{min_area},#{max_area},#{remark},#{siteRequirement},#{clientPay_Type},#{application_Id},#{adornment_Id},#{direction_Id},#{client_id})
+	</insert>
+	<!-- 根据员工id查询所负责的所有客户 -->
+	<select id="findAllClientByStaffId" resultMap="searchClientType">
+		select * from client c inner join clientRequirement cr on c.client_id = cr.client_id where c.staff_id = #{0}
+	</select>	
+
+	<!-- 根据员工id查找其负责的所有客户数量 -->
+	<select id="findAllClientCountByStaffId" resultType="java.lang.Integer">
+		select count(*) from Client where staff_id=#{0}
+	</select>
+	<select id="findSemesterCountClientByStaffId" resultType="java.lang.Integer">
+		 select count(*) from client where staff_id =#{0} and client_time between add_months(sysdate,-6) and sysdate
+	</select>
+	<!-- 根据客户需求查询其负责的所有客户列表 -->
+	<select id="findAllClientByClientReq" resultMap="searchClientType">
+		select * from client c inner join clientRequirement cr on c.client_id = cr.client_id where c.staff_id = #{0}  
+		<if test="cReq.room != 0">
+			<choose>
+				<when test="cReq.room &lt;= 5">
+					and room = #{cReq.room}
+				</when>
+				<otherwise>
+					and room >= #{cReq.room}
+				</otherwise>			
+			</choose>
+		</if>
+		<if test="cReq.min_price != 0">
+			and min_price &lt;= #{cReq.min_price}
+		</if>
+		<if test="cReq.max_price != 0">
+			and max_price >=  #{cReq.max_price}
+		</if>
+		<if test="cReq.min_area != 0">
+			and min_area &lt;= #{cReq.min_area}
+		</if>
+		<if test="cReq.max_area != 0">
+			and max_area >= #{cReq.max_area}
+		</if>
+		<if test="cReq.min_tier != 0">
+			and min_tier &lt;= #{cReq.min_tier}
+		</if>
+		<if test="cReq.max_tier != 0">
+			and max_tier >= #{cReq.max_tier}
+		</if>
+		<if test="cReq.application_Id != 0">
+			and application_id = #{cReq.application_Id}
+		</if>
+		<if test="cReq.adornment_Id != 0">
+			and adornment_Id = #{cReq.adornment_Id}
+		</if>
+		<if test="cReq.direction_Id != 0">
+			and direction_Id = #{cReq.direction_Id}
+		</if>
+		<if test="cReq.client_status != 0">
+			and client_status = #{cReq.client_status}
+		</if>
+		
+	</select>
+
+</mapper>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration  
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<!-- 打开延迟加载的开关 -->  
+        <setting name="lazyLoadingEnabled" value="true" />  
+        <!-- 将积极加载改为消息加载即按需加载 -->  
+        <setting name="aggressiveLazyLoading" value="false"/>  
+	</settings>
+	
+	
+	<!-- 配置映射类的别名 -->
+	<typeAliases>
+		<typeAlias type="pojo.User" alias="user"/>
+		<typeAlias type="pojo.Client" alias="client"/>
+		<typeAlias type="pojo.ClientRequirement" alias="clientReq"/>
+		<typeAlias type="pojo.HouseApplication" alias="houseApp"/>
+		<typeAlias type="pojo.HouseAdornment" alias="houseAdor"/>
+		<typeAlias type="pojo.HouseDirection" alias="houseDire"/>
+		<typeAlias type="pojo.HouseResource" alias="houseResource"/>
+		
+	</typeAliases>
+	<!-- 配置映射文件 -->
+	<mappers>
+		<mapper resource="mapper/userMapper.xml"/>
+		<mapper resource="mapper/HouseResourceMapper.xml"/>
+		<mapper resource="mapper/StaffMapper.xml"/>
+		<mapper resource="mapper/ClientMapper.xml"/>
+		<mapper resource="mapper/AreaMapper.xml"/>
+
+		<mapper resource="mapper/HouseApplicationMapper.xml"/>
+		<mapper resource="mapper/HouseAdornmentMapper.xml"/>
+		<mapper resource="mapper/HouseDirectionMapper.xml"/>
+
+		<mapper resource="mapper/CheckAttendanceMapper.xml"/>
+		<mapper resource="mapper/NoticeMapper.xml"/>
+		<mapper resource="mapper/OrderFormMapper.xml"/>
+		<mapper resource="mapper/HouseTrailMapper.xml"/>
+		<mapper resource="mapper/ClientTrailMapper.xml"/>
+		<mapper resource="mapper/ContractMapper.xml"/>
+
+	</mappers>
+
+	
+</configuration>

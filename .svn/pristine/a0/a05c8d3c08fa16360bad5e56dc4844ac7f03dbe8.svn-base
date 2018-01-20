@@ -1,0 +1,69 @@
+package controller;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import pojo.CheckAttendance;
+import pojo.Staff;
+import service.CheckAttendanceService;
+import service.HouseService;
+
+/**
+ * 实用工具业务类
+ * @author admin
+ *
+ */
+@Controller
+public class ToolsController {
+	@Autowired
+	private CheckAttendanceService checkAttendanceService;
+	@Autowired
+	private HouseService houseService;
+	/**
+	 * 跳转电子考勤页面 显示本月考勤
+	 */
+	@RequestMapping("checkAttendance")
+	public String findAttendances(HttpServletRequest req,ModelMap map){
+		HttpSession session = req.getSession();
+		Staff staff = (Staff)session.getAttribute("loginStaff");
+		List list = checkAttendanceService.findAttendances(staff.getStaff_id());
+		System.out.println(list.size());
+		map.put("attendanceList", list);
+		return "checkAttendance";
+	}
+	
+	/**
+	 * 新增考勤记录
+	 */
+	@RequestMapping("addAttendance")
+	public String addAttendance(int staff_id,HttpServletRequest req,ModelMap map){
+		HttpSession session = req.getSession();
+		Staff staff = (Staff)session.getAttribute("loginStaff");
+		List list = checkAttendanceService.findAttendances(staff.getStaff_id());
+		checkAttendanceService.addAttendance(staff_id);
+		map.put("attendanceList", list);
+		return "checkAttendance";
+	}
+	/**
+	 * 跳转业务员转移房源界面 显示业务员有关房源信息
+	 */
+	@RequestMapping("staffTransformHouse")
+	public String findHouseResourceInfos(HttpServletRequest req,ModelMap map){
+		HttpSession session = req.getSession();
+		Staff staff = (Staff)session.getAttribute("loginStaff");
+		List list = houseService.findHouseResourceInfos(staff.getStaff_id());
+		System.out.println(list.size());
+		map.put("houseResourceList", list);
+		return "staffTransformHouse";
+		
+	}
+
+	
+}

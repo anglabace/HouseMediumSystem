@@ -1,0 +1,58 @@
+package service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import dao.ClientDao;
+import pojo.Client;
+import pojo.ClientRequirement;
+import pojo.HouseApplication;
+
+/**
+ * Service层负责对DAO层调用
+ * @author Chris
+ *
+ */
+@Service
+public class ClientService {
+	@Autowired
+	private ClientDao clientDao;
+	/**
+	 * 新增客户基本信息
+	 * @param client
+	 */
+	public void addClientBaseInfo(Client client){
+		clientDao.addClientBaseInfo(client);
+	}
+
+	
+	/**
+	 * 新增客户需求信息
+	 */
+	public void addClientReqInfo(ClientRequirement clientReq){
+		clientDao.addClientReqInfo(clientReq);
+	}
+	
+	/**
+	 * 根据客户姓名和手机号查询客户对象
+	 */
+	public Client findClientByNameAndTel(String client_name,String telephone){
+		return clientDao.findClientByNameAndTel(client_name, telephone);
+	}
+	
+	/**
+	 * 根据员工id查询所负责的所有客户对象
+	 */
+	public List<Client> findAllClientByStaffId(int staff_id){
+		return clientDao.findAllClientByStaffId(staff_id);
+	}
+	
+	
+	
+
+	public int findAllClientCountByStaffId(int staffId){
+		return clientDao.findAllClientCountByStaffId(staffId);
+	}
+}

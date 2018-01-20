@@ -1,0 +1,73 @@
+package service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import dao.*;
+import pojo.*;
+
+@Service
+public class HouseService {
+	@Autowired
+	private HouseResourceDao houseResourceDao;
+	
+	public void addHouse(HouseResource h){
+		houseResourceDao.addHouse(h);
+	}
+	/**
+	 * 根据员工Id查询当月新增出售房
+	 */
+	public int findCurrentBuyHouseByStaffId(int staffId){
+		return houseResourceDao.findCurrentBuyHouseByStaffId(staffId);
+	}
+	/**
+	 * 根据员工Id查询当月新增出租房
+	 */
+	public int findCurrentLeaseHouseByStaffId(int staffId){
+		return houseResourceDao.findCurrentLeaseHouseByStaffId(staffId);
+	}
+	/**
+	 * 根据员工Id查询该员工半年来的新增房源数
+	 */
+	public int findSemesterCountHouseByStaffId(int staffId){
+		return houseResourceDao.findSemesterCountHouseByStaffId(staffId);
+	}
+	/**
+	 * 根据员工id查询房源信息
+	 */
+	public List<HouseResource> findHouseResourceInfos(int staffId){
+		return houseResourceDao.findHouseResourceInfos(staffId);
+	}
+	/**
+	 * 根据员工Id查询出售房源信息
+	 */
+	public List<HouseResource> findSellHouseResourceInfos(int staffId,int min,int max){
+		return houseResourceDao.findSellHouseResourceInfos(staffId,min, max);
+	}
+	/**
+	 * 根据员工Id查询出售房源总数
+	 */
+	public int findSellCountHouseResource(int staffId){
+		return houseResourceDao.findSellCountHouseResource(staffId);
+	}
+	/**
+	 * 根据员工Id查询出租房源信息
+	 */
+	public List<HouseResource> findLeaseHouseResourceInfos(int staffId,int min,int max){
+		return houseResourceDao.findLeaseHouseResourceInfos(staffId,min, max);
+	}
+	/**
+	 * 根据员工Id查询出租房源总数
+	 */
+	public int findLeaseCountHouseResource(int staffId){
+		return houseResourceDao.findLeaseCountHouseResource(staffId);
+	}
+	/**
+	 * 修改房源的员工id
+	 */
+	public void updateStaffIdInHouseResource(HouseResource houseResource){
+		houseResourceDao.updateStaffIdInHouseResource(houseResource);
+	}
+}

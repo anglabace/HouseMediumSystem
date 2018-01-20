@@ -1,0 +1,17 @@
+package service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import dao.CheckAttendanceDao;
+import pojo.CheckAttendance;
+
+@Service
+public class CheckAttendanceService {
+	@Autowired
+	private CheckAttendanceDao checkAttendanceDao;
+	public CheckAttendance findAllAttendances(int staff_id){
+		return checkAttendanceDao.findAllAttendances(staff_id);
+	}
+
+}

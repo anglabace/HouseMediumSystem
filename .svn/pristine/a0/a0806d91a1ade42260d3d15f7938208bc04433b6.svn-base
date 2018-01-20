@@ -1,0 +1,32 @@
+package controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import pojo.*;
+import service.*;
+
+@Controller
+public class HouseController {
+	@Autowired
+	private HouseService houseService;
+	
+	//加载添加房源页面
+	@RequestMapping("main_AddHouse")
+	public String re(){
+		return "main_AddHouse";
+	}
+		
+	//添加房源信息
+	@RequestMapping("addHouse")
+	public String addHouse(HouseResource h){
+//		HouseResource r = new HouseResource();
+//		r.setFloor_("2");
+		houseService.addHouse(h);
+		return "main_AddHouse";
+	}
+	
+	
+	
+}

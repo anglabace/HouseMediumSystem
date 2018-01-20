@@ -1,0 +1,24 @@
+package dao;
+
+import java.util.List;
+
+import pojo.Contract;
+
+public interface ContractDao {
+	/**
+	 * 新增出售合同
+	 */
+	public void addSellContract(Contract contract);
+	/**
+	 * 新增出租合同
+	 */
+	public void addRentContract(Contract contract);
+	/**
+	 * 查看出售合同
+	 */
+	public List<Contract> findSellContractById(int staff_id);
+	/**
+	 * 查看出租合同
+	 */
+	public List<Contract> findRentContractById(int staff_id);
+}

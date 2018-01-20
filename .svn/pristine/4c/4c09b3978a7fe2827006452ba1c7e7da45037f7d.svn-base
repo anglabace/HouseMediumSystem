@@ -1,0 +1,16 @@
+package service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import dao.CityDao;
+import pojo.City;
+
+@Service
+public class CityService {
+	@Autowired
+	private CityDao cityDao;
+	public City findCityById(int city_Id){
+		return cityDao.findCityById(city_Id);
+	}
+}

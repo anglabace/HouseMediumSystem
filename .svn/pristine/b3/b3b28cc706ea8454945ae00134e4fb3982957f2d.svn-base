@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>   
+<!DOCTYPE mapper   
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"  
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="dao.ClientTrailDao">
+	<select id="findCurrentClientTrailByStaffId" resultType="java.lang.Integer">
+		 select count(*) from clientTrail where to_char(clientTrail_Time,'yyyymm')=to_char(sysdate,'yyyymm') and Staff_id=#{0}
+	</select>
+	
+	<!-- 添加客户跟进记录 -->
+	<insert id="addClientTrail" parameterType="clientTrail">
+		insert into clientTrail values(clienttrail_id.nextval,sysdate,#{clientTrail_content},#{clientTrail_type},#{staff_id},#{client_id})
+	</insert>
+	
+	<!-- 根据员工id分页查询该员工的客户跟进记录 -->
+	<select id="findAllClientTrailByStaffId" resultType="clientTrail">
+		select n.* from               
+			 (select rownum as rid,m.* from   
+     			 (select ct.*,c.client_name from clientTrail ct inner join client c on ct.Client_Id = c.client_id  where ct.staff_id = #{0} order by clientTrail_time desc) m)n where rid between #{1} and #{2}
+	</select>
+	
+	<!-- 根据员工id查询该员工的客户跟进记录总数 -->
+	<select id="findAllClientTrailCountByStaffId" resultType="java.lang.Integer">
+		select count(*) from clientTrail ct inner join client c on ct.Client_Id = c.client_id  where ct.staff_id = #{0}
+	</select>
+	
+	 <!-- 根据客户跟进表id删除客户跟进记录 -->
+	<delete id="deleteSingleClientTrailById">
+		delete from clientTrail where clientTrail_id = #{0}
+	</delete>
+	
+	<!-- 根据客户跟进时间或类型查询客户跟进记录 -->
+	<select id="findByClientTrail" resultType="clientTrail">
+		select n.* from               
+ 			(select rownum as rid,m.* from   
+      			(select ct.*,c.client_name from clientTrail ct inner join client c on ct.Client_Id = c.client_id  where ct.staff_id = #{clientTrail.staff_id} order by clientTrail_time desc) m where 1=1 
+		<if test="clientTrail.startTime != null">
+			and clientTrail_Time >= #{clientTrail.startTime}
+		</if>
+		<if test="clientTrail.endTime != null">
+			and clientTrail_Time &lt;= #{clientTrail.endTime}+1
+		</if>
+		<if test="clientTrail.clientTrail_type != 0">
+			and clientTrail_type = #{clientTrail.clientTrail_type }
+		</if>
+		<if test="1 == 1">
+			  )n where rid between #{1} and #{2} 
+		</if>
+	</select>
+	<!-- 根据客户跟进时间或类型查询客户跟进记录总数 -->
+	<select id="findCountByClientTrail" resultType="java.lang.Integer">	                 
+      	select count(*) from clientTrail ct inner join client c on ct.Client_Id = c.client_id  where ct.staff_id = #{clientTrail.staff_id} 
+		<if test="clientTrail.startTime != null">
+			and clientTrail_Time >= #{clientTrail.startTime}
+		</if>
+		<if test="clientTrail.endTime != null">
+			and clientTrail_Time &lt;= #{clientTrail.endTime}+1
+		</if>
+		<if test="clientTrail.clientTrail_type != 0">
+			and clientTrail_type = #{clientTrail.clientTrail_type }
+		</if>
+		
+	</select>
+	
+	
+</mapper>

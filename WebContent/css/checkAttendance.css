@@ -1,0 +1,72 @@
+	.tab{
+		width: 800px;
+		text-align: center;
+		line-height: 30px;
+	}
+	.word1{
+		font-size: 18px;
+		font-weight:bold;
+	}
+	.word2{
+		font-size: 15px;
+	}
+	a{
+		text-decoration:none;
+		font-size:16px;
+	}
+	a:hover{
+		text-decoration:underline;
+		color:red;
+	}
+	.word3{
+		width:74px;
+		height:24px;
+		background-color:#DFF0D8;
+		text-align:center;
+	}
+	.img1{
+		width:50px;
+		height:50px;
+	}
+	.clear:after{
+		content:"";
+		clear:both;
+		display:block;
+	}
+	.float1{
+		float:left;
+	}
+	.float2{
+		float:right;
+	}
+	
+	.bg2{
+		width:1100px;
+	}
+	
+	.rows{
+		height: 30px;
+	}
+	.title{
+		font-weight: bold;
+		font-size: 14px;
+	}
+	.bg1{
+		width:1100px;
+	}
+	.folio{
+		text-decoration: none;
+		display:inline-block;
+		height: 30px;
+		width: 30px;
+		border: 1px solid rgba(19,58,124,1.00);
+		margin-top: 20px;
+		margin-left: 50px;
+		text-align: center;
+		line-height: 30px;
+		position: relative;
+		left: 200px;
+	}
+	.foliostyle{
+		background-color:silver;
+	}

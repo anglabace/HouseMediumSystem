@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>   
+<!DOCTYPE mapper   
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"  
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="dao.StaffDao">
+
+	<resultMap type="pojo.Staff" id="stafftype">
+			<id property="staff_id" column="staff_id"/>
+			<result property="staff_name" column="staff_name"/>
+			<result property="staff_pwd" column="staff_pwd"/>
+			<result property="sex" column="sex"/>
+			<result property="telephone" column="telephone"/>
+			<result property="wechat" column="wechat"/>
+			<result property="QQ" column="QQ"/>
+			<result property="email" column="email"/>
+			<result property="basePay" column="baseray"/>
+			<result property="head" column="head"/>
+			<result property="hireDate" column="hire_date"/>
+			<result property="flag" column="flag"/>
+			<result property="area_id" column="area_id"/>
+	</resultMap>
+	<!-- 登陆-->
+	<select id="findStaffByName" resultMap="stafftype">
+		select * from staff	where telephone=#{0}
+	</select>
+	<!-- 查询其他员工数量 -->
+	<select id="findAnotherStaffCount" resultType="java.lang.Integer">
+		select count(*) from staff where staff_id != #{id}
+	</select>
+
+	<!-- 查询个人资料 -->
+	<select id="findStaffById" resultMap="stafftype">
+		select * from staff where staff_id = #{0}
+	</select>
+	<!-- 通过员工Id修改员工基本信息 -->
+	<update id="updateStaffByStaffId">
+		update staff set staff_name=#{staffName},sex=#{staffsex},telephone=#{staffphone},wechat=#{staffwx},QQ=#{staffqq},email=#{staffemail},area_id=#{area_Id} where staff_id = #{staffId}
+	</update>
+	<!-- 通过员工ID和新密码修改员工密码 -->
+	<update id="updateStaffPwd">
+		update staff set staff_pwd=#{staff_pwd} where staff_id = #{staff_id}
+	</update>
+	<!-- 通过员工ID和新t头像修改员工头像 -->
+	<update id="updateStaffHead">
+		update staff set head=#{head} where staff_id = #{staff_id}
+	</update>
+	<!-- 分页查询 -->
+	<select id="findAnotherStaffByPage" resultMap="stafftype">
+		select * from (select rownum as rn,staff.* from staff where staff.staff_id != #{0}) where rn between #{1} and #{2}
+	</select>
+	<!-- 经理查询员工信息 -->
+	
+	<select id="findAllStaffOrOneStaff" resultType="pro.StaffHouseStatus">
+		select z.* from
+		(select y.*,staff.staff_name,staff.telephone,staff.hire_date from
+		(select x.staff_id ,
+		sum(decode(x.status,1,x.nums,0)) rentting,
+		sum(decode(x.status,2,x.nums,0)) outtime,
+		sum(decode(x.status,3,x.nums,0)) saling,
+		sum(decode(x.status,4,x.nums,0)) completed
+		from 
+		(select m.* 
+		from 
+		(select n.staff_id,count(*) as nums,n.status
+		from (select s.*,h.status from staff s ,HouseResource h where s.staff_id=h.staff_id) n group by n.staff_id,n.status) m) x
+		group by x.staff_id) y,staff where staff.staff_id=y.staff_id order by hire_date desc ) z where rownum between 1 and 10
+	</select>
+	
+	<!-- 查询所有员工 -->
+	<select id="findAllStaff" resultMap="stafftype">
+		select * from Staff
+	</select>
+</mapper>

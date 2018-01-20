@@ -1,0 +1,63 @@
+@CHARSET "UTF-8";
+/*页面*/
+*{
+
+}
+.main{
+	width: 1185px;
+	height: 1130px;
+	background-color: red;
+	
+}
+/*页面录入信息标题*/
+.main_title{
+	width: 1185px;
+	height: 42px;
+	line-height:42px;
+	
+}
+
+/*页面录入信息主要部分*/
+.main_body{
+	width: 1185px;
+	height: 990px;
+	background-color: wheat;
+	
+}
+/*页面录入信息主要部分标题*/
+.nav{
+	width:90%;
+	height:40px;
+	background-color:rgba(242,242,242,1.00);
+	line-height: 40px;
+	padding-left:30px;
+	font-size:16px;
+	font-weight:600;
+	paddind-left:20px;
+	margin-bottom: 20px;
+}
+
+/*客户基本信息*/
+.clientBaseInfo{
+	width:1185px;
+	height:356px;
+	background-color: thistle;
+	margin-top:-20px;
+}
+
+/* 红* */
+.red{
+	color:red;
+}
+
+ul>li{
+	width:310px;
+	height:50px;
+	display:inline-block;
+	background-color: white;
+	
+}
+.select{
+	height:36px;
+	width:130px;
+}

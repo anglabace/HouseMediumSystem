@@ -1,0 +1,162 @@
+package controller;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.util.WebUtils;
+
+import com.alibaba.fastjson.JSONObject;
+import com.aliyuncs.exceptions.ClientException;
+import com.aliyuncs.exceptions.ServerException;
+
+import pojo.Area;
+import pojo.Staff;
+
+import pojo.StaffForm;
+import pojo.User;
+import service.AreaService;
+
+import service.StaffService;
+import util.PhoneMessageInterface;
+@SessionAttributes("loginStaff")
+@Controller
+public class StaffController {
+	@Autowired
+	private StaffService staffService;
+	@Autowired
+	private AreaService areaService;
+	private int pageNum = 1;
+	
+	@RequestMapping("staff_login")
+	public String login(String telephone, String pwd, ModelMap map){
+		Staff staff = staffService.findStaffByName(telephone);
+		if(staff != null){
+			if(staff.getStaff_pwd().equals(pwd)){
+				map.put("loginStaff", staff);
+			}
+			else{
+				map.put("error", "密码错误!");
+				return "../../index";
+			}
+		}
+		else{
+			map.put("error", " 不存在该员工!");
+			return "../../index";
+		}
+		return "index";
+	}
+
+	//获取员工密码
+	@ResponseBody
+	@RequestMapping("getPwd")
+	public String getPwd(String telephone,ModelMap map){
+		JSONObject obj = new JSONObject(); 
+		Staff staff = staffService.findStaffByName(telephone);
+		obj.put("pwd", staff.getStaff_pwd());
+		return obj.toJSONString();
+	}
+	//发送验证码
+	@ResponseBody
+	@RequestMapping("sendCode")
+	public String sendCode(String telephone,ModelMap map) throws ServerException, ClientException{
+		System.out.println("sendCode");
+		PhoneMessageInterface PhoneMessageInterface=new PhoneMessageInterface();
+		String code=PhoneMessageInterface.sendMessage(telephone);
+		System.out.println(code);
+		JSONObject obj = new JSONObject(); 	
+		obj.put("code",code );
+		return obj.toJSONString();
+	}
+	
+
+	@RequestMapping("main_myInfo")
+	//查找员工个人资料
+	public String findStaffInfo(HttpSession session,ModelMap map){
+		System.out.println("findStaffInfo");
+		//查找区域对象
+		Staff satff=(Staff)session.getAttribute("loginStaff");
+		System.out.println(satff);
+		int areaId=satff.getArea_id();
+		Area area=areaService.findAreaById(areaId);
+		map.put("area", area);
+		System.out.println("区域:"+area.getArea_Name());
+		return "main_myInfo";	
+	}
+	
+	@RequestMapping("updateMyInfo")
+	public String updateMyInfo(StaffForm staffForm,ModelMap map,HttpSession session){
+		staffService.updateStaffByStaffId(staffForm);	
+		Staff staff=staffService.findStaffById(((Staff)(session.getAttribute("loginStaff"))).getStaff_id());
+		int areaId=staff.getArea_id();
+		Area area=areaService.findAreaById(areaId);
+		map.put("loginStaff", staff);
+		map.put("area", area);
+		return "main_myInfo";
+		
+	}
+	
+
+	/**
+	 * 分页显示通讯录
+	 * @param req
+	 * @param map
+	 * @param pageNum
+	 * @return
+	 */
+
+	@RequestMapping("contacts")
+	public String contact(HttpServletRequest req,ModelMap map,Integer pageNum){
+		HttpSession session = req.getSession();
+		Staff staff = (Staff)session.getAttribute("loginStaff");
+		int min = 1;
+		int max;
+		int size = PhoneMessageInterface.size;
+		if(pageNum != null){
+			this.pageNum = (int)pageNum;
+		}
+		
+		min = 1+(this.pageNum-1)*size;
+		max = this.pageNum*size;
+		
+		List<Staff> list = staffService.findAnotherStaffsByPage(staff.getStaff_id(),min, max);
+		int count = staffService.findAnotherStaffCount(staff.getStaff_id());
+		
+		int totalPage = 0;
+		if(count%size == 0){
+			totalPage = count/size;
+		}else{
+			totalPage = count/size + 1;
+		}
+		
+		int start = 0;
+		int end = 0;
+		start = this.pageNum - 2;
+		end = this.pageNum + 2;
+		
+		if(start<1){
+			start = 1;
+			if(end < totalPage){
+				end = start + 4;
+			}
+		}
+		if(end > totalPage){
+			start = totalPage - 4;
+			end = totalPage;
+		}
+		
+		map.put("start", start);
+		map.put("end", end);
+		map.put("staffList", list);
+		map.put("totalPage",totalPage);
+		return "contacts";
+	}
+
+}

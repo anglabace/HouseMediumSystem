@@ -1,0 +1,59 @@
+package controller;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttributes;
+
+import pojo.Area;
+import pojo.Staff;
+import pojo.User;
+import service.AreaService;
+import service.StaffService;
+import service.UserService;
+@SessionAttributes("loginStaff")
+@Controller
+public class StaffController {
+	@Autowired
+	private StaffService staffService;
+	@Autowired
+	private AreaService areaService;
+	
+	@RequestMapping("staff_login")
+	public String login(String telephone, String pwd, ModelMap map){
+		Staff staff = staffService.findStaffByName(telephone);
+		if(staff != null){
+			if(staff.getStaff_pwd().equals(pwd)){
+				Area area = areaService.findAreaById(staff.getArea_id());
+				//System.out.println(area.getArea_Name());
+				map.put("loginStaff", staff);
+				map.put("staffArea", area.getArea_Name());
+				
+			}
+			else{
+				map.put("error", "密码错误!");
+				return "../../index";
+			}
+		}
+		else{
+			map.put("error", " 不存在该员工!");
+			return "../../index";
+		}
+		return "index";
+	}
+	
+	@RequestMapping("contacts")
+	public String contact(ModelMap map,HttpServletRequest req){
+		HttpSession session = req.getSession();
+		Staff staff = (Staff)session.getAttribute("loginStaff");
+		List<Staff> list = staffService.findAnotherStaffs(staff);
+		map.put("staffList", list);
+		return "contacts";
+	}
+}

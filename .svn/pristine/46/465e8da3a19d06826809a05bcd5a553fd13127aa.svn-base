@@ -1,0 +1,38 @@
+package controller;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.util.WebUtils;
+
+import pojo.Staff;
+import service.NoticeService;
+
+@Controller
+public class ManagerController {
+	@Autowired
+	private NoticeService noticeService;
+	
+	@RequestMapping("loginNotice")
+	public String loginNotice(){
+		return "main_notice";
+	}
+	/**
+	 * 添加新的公告
+	 * @param notice_title
+	 * @param notice_content
+	 * @return
+	 */
+	@RequestMapping("addNotice")
+	public String addNotice(String notice_title,String notice_content){
+		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+		Staff staff=(Staff)WebUtils.getSessionAttribute(request, "loginStaff");
+		System.out.println(notice_title+","+notice_content+","+staff.getStaff_id());
+		//noticeService.addNotice(notice_title, notice_content, staff.getStaff_id());
+		return "main_notice";
+	}
+}

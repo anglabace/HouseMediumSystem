@@ -1,0 +1,12 @@
+package dao;
+
+import pojo.CheckAttendance;
+
+public interface CheckAttendanceDao {
+	/**
+	 * 根据用户id查找其所有考勤记录
+	 * @param staff_id
+	 * @return
+	 */
+	public CheckAttendance findAllAttendances(int staff_id);
+}

@@ -1,0 +1,46 @@
+package controller;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import pojo.CheckAttendance;
+import pojo.Staff;
+import service.CheckAttendanceService;
+
+/**
+ * 实用工具业务类
+ * @author admin
+ *
+ */
+@Controller
+public class ToolsController {
+	@Autowired
+	private CheckAttendanceService checkAttendanceService;
+	/**
+	 * 跳转电子考勤页面
+	 */
+	@RequestMapping("checkAttendance")
+	public String ch(){
+		return "checkAttendance";
+	}
+	/**
+	 * 新增考勤记录
+	 */
+	@RequestMapping("addAttendance")
+	public String addAttendance(int staff_id){
+		checkAttendanceService.addAttendance(staff_id);
+		return "checkAttendance";
+	}
+	/**
+	 * 跳转业务员转移房源界面
+	 */
+	@RequestMapping("staffTransformHouse")
+	public String st(){
+		return "staffTransformHouse";
+	}
+}

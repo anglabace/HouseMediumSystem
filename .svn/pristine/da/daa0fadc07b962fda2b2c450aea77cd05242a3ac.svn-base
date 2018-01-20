@@ -1,0 +1,176 @@
+package controller;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.util.WebUtils;
+
+import pojo.*;
+import service.*;
+import util.PhoneMessageInterface;
+
+@Controller
+public class HouseController {
+	@Autowired
+	private HouseService houseService;
+	@Autowired
+	private HouseApplicationService houseApplicationService;
+	@Autowired
+	private HouseAdornmentService houseAdornmentService;
+	@Autowired
+	private HouseDirectionService houseDirectionService;
+	private int pageNum = 1;
+	
+	//加载添加房源页面
+	@RequestMapping("main_AddHouse")
+	public String re(){
+		return "main_AddHouse";
+	}
+		
+	//添加房源信息
+	@RequestMapping("addHouse")
+	public String addHouse(HouseResource h){
+//		HouseResource r = new HouseResource();
+//		r.setFloor_("2");
+		houseService.addHouse(h);
+		return "main_AddHouse";
+	}
+	
+	
+	@RequestMapping("main_viewHouseList")
+	public String viewHouseList(ModelMap map,Integer pageNum){
+		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+		Staff staff=(Staff)WebUtils.getSessionAttribute(request, "loginStaff");
+		int min = 1;
+		int max;
+		int size = PhoneMessageInterface.size;
+		if(pageNum != null){
+			this.pageNum = (int)pageNum;
+		}
+		
+		min = 1+(this.pageNum-1)*size;
+		max = this.pageNum*size;
+		//找到所有房屋用途下拉选项框
+		List<HouseApplication> houseAppSelection = houseApplicationService.findAllHouseAppSelection();
+		//找到所有房屋装饰下拉选项框
+		List<HouseAdornment> houseAdorSelection = houseAdornmentService.findAllAdorSelection();
+		//找到所有房屋朝向下拉选项框
+		List<HouseDirection> houseDireSelection = houseDirectionService.findAllHouseDirSelection();
+		//查询该员工负责的出售的房源
+		List<HouseResource> houseList = houseService.findSellHouseResourceInfos(staff.getStaff_id(),min,max);
+		
+		int count=houseService.findSellCountHouseResource(staff.getStaff_id());
+		int totalPage = 0;
+		if(count%size == 0){
+			totalPage = count/size;
+		}else{
+			totalPage = count/size + 1;
+		}
+		
+		int start = 0;
+		int end = 0;
+		start = this.pageNum - 2;
+		end = this.pageNum + 2;
+		if(start<1){
+			start = 1;
+			if(end < totalPage){
+				end = start + 4;
+			}
+		}
+		if(end > totalPage){
+			start = totalPage - 4;
+			end = totalPage;
+		}
+		if(start<1){
+			start=1;
+		}
+		map.put("start", start);
+		map.put("end", end);
+		map.put("totalPage",totalPage);
+		map.put("count",count);
+		map.put("pageNum", this.pageNum);
+		map.put("houseList",houseList);
+		map.put("houseAppSelection", houseAppSelection);
+		map.put("houseAdorSelection", houseAdorSelection);
+		map.put("houseDireSelection", houseDireSelection);
+		
+		return "main_viewHouseList";
+	}
+	
+	@RequestMapping("main_viewLeaseHouseList")
+	public String viewLeaseHouseList(ModelMap map,Integer pageNum){
+		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+		Staff staff=(Staff)WebUtils.getSessionAttribute(request, "loginStaff");
+		int min = 1;
+		int max;
+		int size = PhoneMessageInterface.size;
+		if(pageNum != null){
+			this.pageNum = (int)pageNum;
+		}
+		
+		min = 1+(this.pageNum-1)*size;
+		max = this.pageNum*size;
+		//找到所有房屋用途下拉选项框
+		List<HouseApplication> houseAppSelection = houseApplicationService.findAllHouseAppSelection();
+		//找到所有房屋装饰下拉选项框
+		List<HouseAdornment> houseAdorSelection = houseAdornmentService.findAllAdorSelection();
+		//找到所有房屋朝向下拉选项框
+		List<HouseDirection> houseDireSelection = houseDirectionService.findAllHouseDirSelection();
+		//查询该员工负责的出售的房源
+		List<HouseResource> houseList = houseService.findLeaseHouseResourceInfos(staff.getStaff_id(),min,max);
+		
+		int count=houseService.findLeaseCountHouseResource(staff.getStaff_id());
+		int totalPage = 0;
+		if(count%size == 0){
+			totalPage = count/size;
+		}else{
+			totalPage = count/size + 1;
+		}
+		
+		int start = 0;
+		int end = 0;
+		start = this.pageNum - 2;
+		end = this.pageNum + 2;
+		if(start<1){
+			start = 1;
+			if(end < totalPage){
+				end = start + 4;
+			}
+		}
+		if(end > totalPage){
+			start = totalPage - 4;
+			end = totalPage;
+		}
+		if(start<1){
+			start=1;
+		}
+		map.put("start", start);
+		map.put("end", end);
+		map.put("totalPage",totalPage);
+		map.put("count",count);
+		map.put("pageNum", this.pageNum);
+		map.put("houseList",houseList);
+		map.put("houseAppSelection", houseAppSelection);
+		map.put("houseAdorSelection", houseAdorSelection);
+		map.put("houseDireSelection", houseDireSelection);
+		
+		return "main_viewLeaseHouseList";
+	}
+	
+	@RequestMapping("deleteHouse")
+	public String deleteHouse(Integer houseId){
+		System.out.println("执行了删除业务");
+		System.out.println(houseId);
+		houseService.deleteHouseResource(houseId);
+		return "redirect:main_viewHouseList.do?pageNum=1";
+	}
+	
+}

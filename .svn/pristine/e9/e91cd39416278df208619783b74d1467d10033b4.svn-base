@@ -1,0 +1,19 @@
+package dao;
+
+import pojo.Client;
+
+/**
+ * 数据访问接口
+ * @author Chris
+ *
+ */
+public interface ClientDao {
+	/**
+	 * 添加客户基本信息
+	 */
+	public void addClientBaseInfo(Client client);
+	/**
+	 * 根据员工id查找其负责的所有客户
+	 */
+	public int findAllClientCountByStaffId(int staffId);
+}

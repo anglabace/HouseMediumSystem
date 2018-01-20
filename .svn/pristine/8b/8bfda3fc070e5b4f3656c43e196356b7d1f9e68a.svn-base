@@ -1,0 +1,17 @@
+package service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import dao.*;
+import pojo.*;
+
+@Service
+public class HouseService {
+	@Autowired
+	private HouseResourceDao houseResourceDao;
+	
+	public void addHouse(HouseResource h){
+		houseResourceDao.addHouse(h);
+	}
+}

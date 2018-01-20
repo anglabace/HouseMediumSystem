@@ -1,0 +1,9 @@
+package dao;
+
+public interface HouseTrailDao {
+
+	/**
+	 * 根据员工Id获取当月跟进房源数
+	 */
+	public int findCurrentHouseTrailByStaffId(int staffId);
+}

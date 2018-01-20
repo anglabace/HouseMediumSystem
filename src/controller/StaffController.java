@@ -1,0 +1,337 @@
+package controller;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.List;
+import java.util.UUID;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.web.util.WebUtils;
+
+import com.alibaba.fastjson.JSONObject;
+import com.aliyuncs.exceptions.ClientException;
+import com.aliyuncs.exceptions.ServerException;
+
+import pojo.Area;
+import pojo.City;
+import pojo.Staff;
+
+import pojo.StaffForm;
+import pojo.StaffHouseStatus;
+import pojo.User;
+import service.AreaService;
+import service.CityService;
+import service.StaffService;
+import util.Page;
+import util.PageUtil;
+import util.PhoneMessageInterface;
+@SessionAttributes("loginStaff")
+@Controller
+public class StaffController {
+	@Autowired
+	private StaffService staffService;
+	@Autowired
+	private AreaService areaService;
+	@Autowired
+	private CityService cityService;
+	/**
+	 * 登录
+	 * @param telephone
+	 * @param pwd
+	 * @param map
+	 * @return
+	 */
+	
+	@RequestMapping("loadIndex")
+	public String loadIndex(){
+		return "index";
+	}
+	//郑世杰：登录模块
+	@RequestMapping("staff_login")
+	public String login(String telephone, String pwd, ModelMap map,Boolean radio, HttpServletResponse response){
+		Staff staff = staffService.findStaffByName(telephone);
+		//System.err.println("radio:"+radio);
+		if(staff != null){
+			if(staff.getStaff_pwd().equals(pwd)){
+				Cookie cookie1 =new Cookie("staffName", staff.getTelephone());
+				Cookie cookie2 =new Cookie("staffPsw", staff.getStaff_pwd());
+				map.put("loginStaff", staff);
+				if(radio==null){ 
+					cookie1.setMaxAge(0);
+					cookie2.setMaxAge(0);
+					response.addCookie(cookie1);
+					response.addCookie(cookie2);
+				}else{
+					cookie1.setMaxAge(60*60*24*7);
+					cookie2.setMaxAge(60*60*24*7);
+					response.addCookie(cookie1);
+					response.addCookie(cookie2);
+				}
+			}
+			else{
+				map.put("error", "密码错误!");
+				return "../../index";
+			}
+		}
+		else{
+			map.put("error", " 不存在该员工!");
+			return "../../index";
+		}
+		return "index";
+	}
+	
+	/**
+	 * 注销
+	 */
+	@RequestMapping("cancel")
+	public String cancel(HttpSession session){
+		session.invalidate();
+		return "../../index";
+	}
+	
+	/**
+	 * 短信找回密码
+	 * @param telephone
+	 * @param map
+	 * @return
+	 */
+	//获取员工密码
+	@ResponseBody
+	@RequestMapping("getPwd")
+	public String getPwd(String telephone,ModelMap map){
+		JSONObject obj = new JSONObject(); 
+		Staff staff = staffService.findStaffByName(telephone);
+		obj.put("pwd", staff.getStaff_pwd());
+		return obj.toJSONString();
+	}
+	//发送验证码
+	@ResponseBody
+	@RequestMapping("sendCode")
+	public String sendCode(String telephone,ModelMap map) throws ServerException, ClientException{
+		System.out.println("sendCode");
+		PhoneMessageInterface PhoneMessageInterface=new PhoneMessageInterface();
+		String code=PhoneMessageInterface.sendMessage(telephone);
+		System.out.println(code);
+		JSONObject obj = new JSONObject(); 	
+		obj.put("code",code );
+		return obj.toJSONString();
+	}
+	
+	/**
+	 * 查看员工个人基本资料
+	 * @param session
+	 * @param map
+	 * @return
+	 */
+	@RequestMapping("main_myInfo")
+	public String findStaffInfo(HttpSession session,ModelMap map){
+		System.out.println("findStaffInfo");
+		//查找区域对象
+		Staff satff=(Staff)session.getAttribute("loginStaff");
+		//System.out.println(satff);
+		int areaId=satff.getArea_id();
+		Area area=areaService.findAreaByAreaId(areaId);
+		//找到所对应城市Id下查找所有区域
+		City city=area.getCity();
+		//System.out.println("city:"+city);
+		List<Area> areaList=areaService.findAreaListBycityName(city.getCity_Name());
+		map.put("areaList", areaList);
+		map.put("area", area);
+		//System.out.println("区域:"+area.getArea_Name());
+		return "main_myInfo";	
+	}
+	/**
+	 * 个人资料修改
+	 * @param staffForm
+	 * @param map
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("updateMyInfo")
+	public String updateMyInfo(StaffForm staffForm,ModelMap map,HttpSession session){
+		staffService.updateStaffByStaffId(staffForm);	
+		Staff staff=staffService.findStaffById(((Staff)(session.getAttribute("loginStaff"))).getStaff_id());
+		System.out.println("staffForm:"+staffForm.getArea_Id());
+		int areaId=staff.getArea_id();
+		Area area=areaService.findAreaByAreaId(areaId);
+		City city=area.getCity();
+		List<Area> areaList=areaService.findAreaListBycityName(city.getCity_Name());
+		map.put("areaList", areaList);
+		map.put("loginStaff", staff);
+		map.put("area", area);
+		return "main_myInfo";
+		
+	}
+	
+	/**
+	 * 查看密码修改界面
+	 * @return
+	 */
+	@RequestMapping("main_updatePwd")
+	public String showUpdatePwd(){	
+		//System.out.println("密码修改界面");
+		return "main_updatePwd";	
+	}
+	/**
+	 * 修改员工密码
+	 * @return
+	 */
+	@RequestMapping("updateStaffPwd")
+	public String updateStaffPwd(Staff staff,HttpSession session){
+		//System.out.println("进入修改员工的controller的业务蹭了");
+		Staff sessionStaff=(Staff)(session).getAttribute("loginStaff");
+		sessionStaff.setStaff_pwd(staff.getStaff_pwd());
+		session.setAttribute("loginStaff", sessionStaff);
+		staffService.updateStaffPwd(sessionStaff);
+		return "main_updatePwd";	
+	}
+	/**
+	 * 上传头像
+	 */
+	@RequestMapping("upLoadPic")
+	public String upLoadPic(@RequestParam("file") CommonsMultipartFile file,  
+            HttpServletRequest request, ModelMap model,HttpSession session){
+		 // 获得原始文件名  
+        String fileName = file.getOriginalFilename();  
+        System.out.println("原始文件名:" + fileName);  
+        //更新员工头像
+        Staff staff=(Staff)(session).getAttribute("loginStaff");
+        staff.setHead(fileName);
+        staffService.updateStaffHead(staff);
+        session.setAttribute("loginStaff", staff);
+        // 新文件名  
+        String newFileName = fileName;  
+        // 获得项目的路径  
+        ServletContext sc = request.getSession().getServletContext();  
+        // 上传位置  
+        String path = sc.getRealPath("/images/head") + "/"; // 设定文件保存的目录  
+        File f = new File(path);  
+        if (!f.exists())  
+            f.mkdirs();  
+        if (!file.isEmpty()) {  
+            try {  
+                FileOutputStream fos = new FileOutputStream(path + newFileName);  
+                InputStream in = file.getInputStream();  
+                int b = 0;  
+                while ((b = in.read()) != -1) {  
+                    fos.write(b);  
+                }  
+                fos.close();  
+                in.close();  
+            } catch (Exception e) {  
+                e.printStackTrace();  
+            }  
+        }  
+       // System.out.println("上传图片到:" + path + newFileName);  
+        // 保存文件地址，用于JSP页面回显  
+        model.addAttribute("fileUrl", "images/head/"+ newFileName);  
+        //System.out.println("上传图片到:" +path + newFileName);
+        return "main_updateHead";  	
+	}
+	/**
+	 * 查看头像信息
+	 */
+	@RequestMapping("main_updateHead")
+	public String findStaffHead(ModelMap model,HttpSession session){
+		//System.out.println("进入到头像界面");
+		//通过sessions获取头像名称
+		Staff staff=(Staff)(session).getAttribute("loginStaff");
+		String FileName=staff.getHead(); 
+		 // 保存文件地址，用于JSP页面回显  
+        model.addAttribute("fileUrl", "images/head/"+ FileName);
+        return "main_updateHead";  	
+		 
+	}
+	/**
+	 * 分页显示通讯录
+	 * @param req
+	 * @param map
+	 * @param pageNum
+	 * @return
+	 */
+
+	@RequestMapping("contacts")
+	public String contact(HttpServletRequest req,ModelMap map,Integer pageNum){
+		HttpSession session = req.getSession();
+		Staff staff = (Staff)session.getAttribute("loginStaff");
+		int count = staffService.findAnotherStaffCount(staff.getStaff_id());
+		Page page = PageUtil.Page(pageNum, count);
+		
+		List<Staff> list = staffService.findAnotherStaffsByPage(staff.getStaff_id(),page.getMin(), page.getMax());
+		
+		map.put("start", page.getStart());
+		map.put("end", page.getEnd());
+		map.put("staffList", list);
+		map.put("totalPage",page.getTotalPage());
+		map.put("count",count);
+		map.put("pageNum", page.getPageNum());
+		return "contacts";
+	}
+	/**
+	 * 经理查询员工表,可以根据员工姓名,也可以没有条件
+	 * 
+	 */
+	@RequestMapping("searchStaffList")
+	public String searchStaffList(String staff_name,ModelMap map,Integer pageNo){
+		System.out.println("searchStaffList");
+		//注意：没参数传进来就为空，有参数传进来，可能为空的字符串，整型数据就set不进去了
+		if(pageNo==null){
+			pageNo=1;
+		}
+		if(staff_name==null){
+			staff_name="";
+		}
+		//每页的尺寸
+		int size = 1;
+		//System.out.println("总条目数"+totalNum);
+		//总条目数
+		int totalNum=staffService.findAllStaffNum("%"+staff_name+"%");
+		//System.out.println("总页数："+pageNum);
+		//当前页的第一条记录
+		int start=(pageNo-1)*1+1;
+				//当前页的最后一条记录
+		int end=pageNo*size;
+		List<StaffHouseStatus> list=staffService.findAllStaffOrOneStaffUp("%"+staff_name+"%",start,end);
+		
+		//总页数
+		int pageNum=(int)Math.ceil((float)totalNum/1);
+		System.err.println("总页数："+pageNum);
+		map.put("staffList", list);
+		map.put("pageNum", pageNum);
+		map.put("pageNo", pageNo);
+		map.put("staff_name", staff_name);
+		return "StaffOneOrAllList";
+	}
+	/**
+	 * 点击查看员工列表
+	 */
+	@RequestMapping("main_showStaffList")
+	public String showStaffList(){
+		System.out.println("main_showStaffList");
+		return "main_showStaffList";
+	}
+	/**
+	 * 添加员工
+	 *
+	 */
+	@RequestMapping("addStaff")
+	public String addStaff(Staff staff){
+		System.out.println("进入添加员工");
+		staffService.addStaff(staff);
+		return showStaffList();
+	}
+}

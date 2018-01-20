@@ -1,0 +1,29 @@
+package service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import dao.*;
+import pojo.*;
+
+@Service
+public class HouseService {
+	@Autowired
+	private HouseResourceDao houseResourceDao;
+	
+	public void addHouse(HouseResource h){
+		houseResourceDao.addHouse(h);
+	}
+	/**
+	 * 根据员工Id查询当月新增出售房
+	 */
+	public int findCurrentBuyHouseByStaffId(int staffId){
+		return houseResourceDao.findCurrentBuyHouseByStaffId(staffId);
+	}
+	/**
+	 * 根据员工Id查询当月新增出租房
+	 */
+	public int findCurrentLeaseHouseByStaffId(int staffId){
+		return houseResourceDao.findCurrentLeaseHouseByStaffId(staffId);
+	}
+}

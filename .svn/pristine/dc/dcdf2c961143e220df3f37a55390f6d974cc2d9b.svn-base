@@ -1,0 +1,28 @@
+package service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import dao.StaffDao;
+import pojo.Staff;
+
+@Service
+public class StaffService {
+	@Autowired
+	private StaffDao staffDao;
+	//登陆zsj
+	public Staff findStaffByName(String telephone){
+		return staffDao.findStaffByName(telephone);
+	}
+	/**
+	 * 查看其他员工
+	 * @param staff_id
+	 * @return
+	 */
+	public List<Staff> findAnotherStaffs(Staff staff){
+		System.out.println(staff.getStaff_id());
+		return staffDao.findAnotherStaffs(staff);
+	}
+}

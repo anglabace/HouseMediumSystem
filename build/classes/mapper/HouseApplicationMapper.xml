@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>   
+<!DOCTYPE mapper   
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"  
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="dao.HouseApplicationDao">
+	<!-- 查询所有房屋用途下拉选项框 -->
+	<select id="findAllHouseAppSelection" resultType="houseApp">
+		select * from houseApplication
+	</select>
+</mapper>

@@ -1,0 +1,17 @@
+package service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import dao.StaffDao;
+import pojo.Staff;
+
+@Service
+public class StaffService {
+	@Autowired
+	private StaffDao staffDao;
+	//µÇÂ½zsj
+	public Staff findStaffByName(String telephone){
+		return staffDao.findStaffByName(telephone);
+	}
+}

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>   
+<!DOCTYPE mapper   
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"  
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="dao.ContractDao">
+	<resultMap type="pojo.Contract" id="conType">
+		<id property="Contract_id" column="contract_id"/>
+		<result property="Contract_type" column="contract_type"/>
+		<result property="Contract_Time" column="contract_time"/>
+		<result property="lease" column="lease"/>
+		<result property="Start_day" column="start_day"/>
+		<result property="Contract_status" column="contract_status"/>
+		<result property="Contract_price" column="contract_price"/>
+		<association property="house" javaType="pojo.HouseResource">
+			<id property="houseResource_id" column="houseResource_id"/>
+			<result property="build_areas" column="build_areas"/>
+			<result property="total_price" column="total_price"/>
+			<result property="type" column="type_"/>
+			<association property="neighborHood" javaType="pojo.NeighborHood">
+				<id property="neighborHood_Id" column="neighborhood_id"/>
+				<result property="neighborHood_Name" column="neighborHood_name"/>
+			</association> 
+			<association property="owner" javaType="pojo.Owner">
+				<id property="owner_id" column="owner_id"/>
+				<result property="owner_name" column="owner_name"/>
+			</association> 
+		</association>
+		<association property="client" javaType="pojo.Client">
+			<id property="client_id" column="client_id"/>
+			<result property="client_name" column="client_name"/>
+		</association>
+	</resultMap>
+	<!-- 添加出售合同 -->
+	<insert id="addSellContract" parameterType="pojo.Contract">
+		insert into contract values(contract_id.nextval,#{Bid},#{Contract_price},#{Contract_Time},#{Contract_remark},
+		1,null,null,#{Contract_type},#{Staff_id},#{Client_id},#{house_id})
+	</insert>
+	<!-- 添加出租合同 -->
+	<insert id="addRentContract" parameterType="pojo.Contract">
+		insert into contract values(contract_id.nextval,null,#{Contract_price},#{Contract_Time},#{Contract_remark},
+		1,#{lease},#{Start_day},#{Contract_type},#{Staff_id},#{Client_id},#{house_id})
+	</insert>
+	<!-- 合同类型  1出售合同 2出租合同 -->
+	<!-- 查看员工签订的出售合同 -->
+	<select id="findSellContractById" resultMap="conType">
+		select * from (select * from contract where staff_id = #{0} and contract_type = 1)con inner join client 
+		on client.client_id = con.client_id inner join 
+		(select * from houseresource inner join neighborhood on houseresource.neighborhood_id = neighborhood.neighborhood_id inner join owner 
+		on houseresource.owner_id = owner.owner_id)house
+		on house.houseresource_id = con.houseresource_id
+	</select>
+	<!-- 查看员工签订的出租合同 -->
+	<select id="findRentContractById" resultMap="conType">
+		select * from (select * from contract where staff_id = #{0} and contract_type = 2)con inner join client 
+		on client.client_id = con.client_id inner join 
+		(select * from houseresource inner join neighborhood on houseresource.neighborhood_id = neighborhood.neighborhood_id inner join owner 
+		on houseresource.owner_id = owner.owner_id)house
+		on house.houseresource_id = con.houseresource_id
+	</select>
+</mapper>

@@ -1,0 +1,43 @@
+package dao;
+
+import java.util.List;
+
+import pojo.Client;
+import pojo.ClientRequirement;
+
+/**
+ * 数据访问接口
+ * @author Chris
+ *
+ */
+public interface ClientDao {
+	/**
+	 * 添加客户基本信息
+	 */
+	public void addClientBaseInfo(Client client);
+
+	
+	/**
+	 * 添加客户需求信息
+	 */
+	public void addClientReqInfo(ClientRequirement clientReq);
+
+	/**
+	 * 根据客户姓名和手机号查询客户对象
+	 */
+	public Client findClientByNameAndTel(String client_name,String telephone);
+	
+	/**
+	 * 根据员工id查询所负责的所有客户对象
+	 */
+	public List<Client> findAllClientByStaffId(int staff_id);
+
+	/**
+	 * 根据员工id查找其负责的所有客户
+	 */
+	public int findAllClientCountByStaffId(int staffId);
+	/**
+	 * 根据员工Id查询该员工半年来的新增客源数
+	 */
+	public int findSemesterCountClientByStaffId(int staffId);
+}

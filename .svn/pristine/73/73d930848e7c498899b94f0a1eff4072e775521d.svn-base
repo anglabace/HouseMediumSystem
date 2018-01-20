@@ -1,0 +1,19 @@
+package service;
+
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import dao.AreaDao;
+import pojo.Area;
+
+@Service
+public class AreaService {
+	@Autowired
+	private AreaDao areaDao;
+	//通过区域Id返回区域对象
+	public Area findAreaById(int area_Id){
+		return areaDao.findAreaById(area_Id);
+	}
+}

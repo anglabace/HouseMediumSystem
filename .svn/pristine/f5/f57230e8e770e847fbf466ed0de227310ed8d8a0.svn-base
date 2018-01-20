@@ -1,0 +1,149 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt_rt" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>客户跟进列表</title>
+<link href="./css/clientList.css" type="text/css" rel="stylesheet" />
+</head>
+<!-- 导入jquery文件 -->
+<script src="./js/jquery-1.8.0.js"></script>
+<body>
+<div class="main">
+	<form action="" method="post" id="searchForm">
+		<div class="searchBar">
+				&nbsp;&nbsp;跟进时间&nbsp;&nbsp;
+				<input type="text" class="timeText" placeholder="开始时间" >&nbsp;&nbsp;-&nbsp;&nbsp;<input type="text" class="timeText" placeholder="结束时间">&nbsp;&nbsp;
+				跟进类型&nbsp;&nbsp;:&nbsp;&nbsp;
+				<select class="select ii" name="clientTrail_type">
+					<option value="1">去电</option>
+					<option value="2">勘察</option>
+					<option value="3">面谈</option>
+					<option value="4">短信</option>
+					<option value="5">邮件</option>
+					<option value="6">其他</option>
+				</select>
+				<div class="btn" id="searchBtn" style="margin-left:300px;">搜索</div>  
+				<div class="btn" id="resetBtn" style="color: black;background-color: #DDDDDD; margin-left: 10px;">重置</div>
+			</div>
+	</form>
+	<table  class="searchInfoTab" border="1" cellpadding="0" cellspacing="0">
+			<tr style="height: 30px;">
+				<th>序号</th>
+				<th>跟进类型</th>
+				<th>客户类型</th>
+				<th>跟进内容</th>
+				<th>跟进人</th>
+				<th>跟进时间</th>
+				<th>操作</th>
+			</tr>
+			<c:forEach items="${clientTrailList }" var="clientTrail" varStatus="staus">
+				<tr id="${clientTrail.clientTrail_ID }">
+					<td>${staus.index + 1 }</td>
+					<c:choose>
+						<c:when test="${clientTrail.clientTrail_type == 1 }">
+							<td>去电</td>
+						</c:when>
+						<c:when test="${clientTrail.clientTrail_type == 2 }">
+							<td>勘察</td>
+						</c:when>
+						<c:when test="${clientTrail.clientTrail_type == 3 }">
+							<td>面谈</td>
+						</c:when>
+						<c:when test="${clientTrail.clientTrail_type == 4 }">
+							<td>短信</td>
+						</c:when>
+						<c:when test="${clientTrail.clientTrail_type == 5 }">
+							<td>邮件</td>
+						</c:when>
+						<c:when test="${clientTrail.clientTrail_type == 6 }">
+							<td>其他</td>
+						</c:when>
+					</c:choose>
+					<td>1</td>
+					<td>${clientTrail.clientTrail_content }</td>
+					<td></td>
+					<td><fmt:formatDate value="${clientTrail.clientTrail_Time }" pattern="yyyy-MM-dd  HH:mm:ss" /></td>
+					<td>
+						<a style="text-decoration: none; color:#0B73DF;" class="optBtn">操作▼</a>
+						<div class="optDiv">
+							<ul class="optUl">
+								<li style="border-bottom: 0px;"><a href="javascript:deleteSingleClientTrail(${clientTrail.clientTrail_ID });">删除</a></li>
+							</ul>							
+						</div>
+					</td>
+				</tr>
+			</c:forEach>
+			
+	</table>
+	<div class="btnToolBar" >
+		<button title="首页">&lt;&lt;</button>
+		<button title="上一页">&lt;</button>
+		<button id="selectBtn">第几页/共几页</button>
+		<button title="下一页">&gt;</button>
+		<button title="末页">&gt;&gt;</button>
+	</div>
+</div>
+</body>
+<script type="text/javascript">
+
+	//给搜索div按钮绑定事件
+	$("#searchBtn").click(function(){
+		//获取表单对象
+		var searchform = $("#searchForm");
+		$("#searchForm .ii").each(function(){
+			//如果表单对象的值为空 则移除name 即不上传表单
+			if(this.value == ""){
+				$(this).removeAttr("name");
+			}
+		})
+		$("#searchForm").submit();	
+	})
+	
+	//给重置div按钮绑定事件
+	$("#resetBtn").click(function(){
+		document.getElementById("searchForm").reset();	
+	})
+	
+	//页面加载时表格奇数行变色
+	$(document).ready(function(){
+		$(".searchInfoTab>tbody tr:even").css("background-color","#DFF0D8");
+	})
+	//为操作按钮绑定事件
+	$(".optBtn").click(function(){
+		//var sourcePosition = $(this).offset();
+		$(".optDiv:visible").hide("slow");
+		$(this).next().show("slow");
+		//$(".optDiv").offset({top:sourcePosition.top+10,left:sourcePosition.left})
+		//$(".optDiv").show("slow");
+		
+	})
+	//鼠标移入会变色操作选项框
+	$(".optUl>li").mouseenter(function(){
+		$(this).css("background-color","white");
+	}).mouseleave(function(){
+		$(this).css("background-color","wheat");		
+	})
+	
+	//ajax 是否删除客户跟进记录 
+	function deleteSingleClientTrail(clientTrailId){
+		console.log($("#"+clientTrailId));
+		console.log("")
+		var confirmAct = confirm("是否确认删除？");
+		if(confirmAct){
+			$.ajax({
+				type:"post",
+				url:"deleteClientTrail.do",
+				data:{"clientTrail_id":clientTrailId},
+				success:function(data){
+						$("#"+clientTrailId).remove();
+					}
+				})
+		}
+	}
+	
+</script>
+</html>

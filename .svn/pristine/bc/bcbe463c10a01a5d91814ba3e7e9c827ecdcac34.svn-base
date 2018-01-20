@@ -1,0 +1,45 @@
+package controller;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import pojo.Client;
+import pojo.Staff;
+import service.ClientService;
+import service.ContractService;
+
+@Controller
+public class ContractController {
+	@Autowired
+	private ContractService contractService;
+	@Autowired
+	private ClientService clientService;
+	/**
+	 * 显示签约页面
+	 * @return
+	 */
+	@RequestMapping("contract")
+	public String showPage(HttpServletRequest req,ModelMap map){
+		HttpSession session = req.getSession();
+		Staff staff = (Staff)session.getAttribute("loginStaff");
+		List<Client> list = clientService.findAllClientByStaffId(staff.getStaff_id());
+		map.put("clientList", list);
+		return "contract";
+	}
+	/**
+	 * 新增签约
+	 * @return
+	 */
+	@RequestMapping("contracts")
+	public String addContract(){
+		
+		return "contract";
+	}
+}

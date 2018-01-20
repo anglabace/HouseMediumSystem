@@ -1,0 +1,22 @@
+package service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import dao.CheckAttendanceDao;
+import pojo.CheckAttendance;
+
+@Service
+public class CheckAttendanceService {
+	@Autowired
+	private CheckAttendanceDao checkAttendanceDao;
+	
+	/**
+	 * 新增考勤信息
+	 * @param checkAttendance
+	 */
+	public void addAttendance(int staff_id){
+		checkAttendanceDao.addAttendance(staff_id);
+	}
+
+}

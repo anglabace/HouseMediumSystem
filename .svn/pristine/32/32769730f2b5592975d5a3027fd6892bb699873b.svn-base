@@ -1,0 +1,10 @@
+package dao;
+
+import pojo.Area;
+
+public interface AreaDao {
+	/**
+	 * 通过区域Id返回区域对象
+	 */
+	public Area findAreaById(int area_Id);
+}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>   
+<!DOCTYPE mapper   
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"  
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="dao.CheckAttendanceDao">
+	<!-- 增加考勤信息 -->
+	<insert id="addAttendance" parameterType="java.lang.Integer">
+		insert into checkAttendance values(checkAttendance_id.nextval,sysdate,#{0})
+	</insert>
+	<!-- 查询本月考勤 -->
+	<select id="findAttendances" resultType="pojo.CheckAttendance">
+		select * from checkAttendance where to_char(ondutytime,'yyyymm')=to_char(sysdate,'yyyymm') and staff_id=#{0} 
+	</select>
+	<select id="findCountCheckByStaffId" resultType="java.lang.Integer">
+		select count(*) from checkAttendance where to_char(ondutytime,'yyyymm')=to_char(sysdate,'yyyymm') and staff_id=#{0} 
+	</select>
+</mapper>

@@ -1,0 +1,96 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>左侧导航menu</title>
+<link href="./css/css.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="./js/sdmenu.js"></script>
+<script type="text/javascript">
+	// <![CDATA[
+	var myMenu;
+	window.onload = function() {
+		myMenu = new SDMenu("my_menu");
+		myMenu.init();
+	};
+	// ]]>
+</script>
+<style type=text/css>
+html{ SCROLLBAR-FACE-COLOR: #538ec6; SCROLLBAR-HIGHLIGHT-COLOR: #dce5f0; SCROLLBAR-SHADOW-COLOR: #2c6daa; SCROLLBAR-3DLIGHT-COLOR: #dce5f0; SCROLLBAR-ARROW-COLOR: #2c6daa;  SCROLLBAR-TRACK-COLOR: #dce5f0;  SCROLLBAR-DARKSHADOW-COLOR: #dce5f0; overflow-x:hidden;}
+body{overflow-x:hidden; background:url(images/main/leftbg.jpg) left top repeat-y #f2f0f5; width:194px;}
+</style>
+</head>
+<body onselectstart="return false;" ondragstart="return false;" oncontextmenu="return false;">
+<div id="left-top">
+	<div><img src="images/main/member.gif" width="44" height="44" /></div>
+    <span>用户：admin<br>角色：超级管理员</span>
+</div>
+    <div style="float: left" id="my_menu" class="sdmenu">	
+        
+      <div class="collapsed" > 
+        <span>出售房源</span>
+        <a href="main_AddHouse.do" target="mainFrame" onFocus="this.blur()">添加房源</a>
+        <a href="main_list.html" target="mainFrame" onFocus="this.blur()">查看房源</a>
+        <a href="main_info.html" target="mainFrame" onFocus="this.blur()">预约我的</a>
+        <a href="main_message.html" target="mainFrame" onFocus="this.blur()">我带看的</a>
+        <a href="main_menu.html" target="mainFrame" onFocus="this.blur()">房源跟进</a>
+      </div>
+      <div>
+        <span>出租房源</span>
+        <a href="main.html" target="mainFrame" onFocus="this.blur()">添加房源</a>
+        <a href="main_list.html" target="mainFrame" onFocus="this.blur()">查看房源</a>
+        <a href="main_info.html" target="mainFrame" onFocus="this.blur()">预约我的</a>
+        <a href="main.html" target="mainFrame" onFocus="this.blur()">我带看的</a>
+        <a href="main_menu.html" target="mainFrame" onFocus="this.blur()">房源跟进</a>
+      </div>
+      <div>
+        <span>合同管理</span>
+        <a href="main.html" target="mainFrame" onFocus="this.blur()">分组权限</a>
+        <a href="main_list.html" target="mainFrame" onFocus="this.blur()">级别权限</a>
+        <a href="main_info.html" target="mainFrame" onFocus="this.blur()">角色管理</a>
+        <a href="main.html" target="mainFrame" onFocus="this.blur()">自定义权限</a>
+      </div>
+      <div>
+      	<span>客户</span>
+        <a href="main_addClient.do" target="mainFrame" onFocus="this.blur()">添加客户</a>
+        <a href="main_list.html" target="mainFrame" onFocus="this.blur()">客户列表</a>
+        <a href="main_info.html" target="mainFrame" onFocus="this.blur()">客户跟进</a>
+      </div>
+      <!-- 郑世杰:个人资料查询与修改开始 -->
+      <div>
+      	<span>个人</span>
+        <a href="main_myInfo.do" target="mainFrame" onFocus="this.blur()">个人资料</a>
+        <a href="main_updatePwd.do" target="mainFrame" onFocus="this.blur()">密码修改</a>
+        <a href="main_updateHead.do" target="mainFrame" onFocus="this.blur()">头像修改</a>
+      </div>
+      <!-- 郑世杰:个人资料查询与修改结束 -->
+      <div>
+     	 <span>实用工具</span>
+        <a href="checkAttendance.do" target="mainFrame" onFocus="this.blur()">电子考勤</a>
+        <a href="contacts.do" target="mainFrame" onFocus="this.blur()">员工通讯录</a>
+        <a href="main_info.html" target="mainFrame" onFocus="this.blur()">贷款计算器</a>
+        <a href="main.html" target="mainFrame" onFocus="this.blur()">抽成计算器</a>
+        <a href="staffTransformHouse.do" target="mainFrame" onFocus="this.blur()">业务员转移房源</a>
+
+      </div>
+      <div>
+        <span>系统设置</span>
+        <a href="main.html" target="mainFrame" onFocus="this.blur()">分组权限</a>
+        <a href="main_list.html" target="mainFrame" onFocus="this.blur()">级别权限</a>
+        <a href="main_info.html" target="mainFrame" onFocus="this.blur()">角色管理</a>
+        <a href="main.html" target="mainFrame" onFocus="this.blur()">自定义权限</a>
+      </div>
+      <c:if test="${loginStaff.flag==1 }">
+    	<div>
+        <span>经理</span>
+        <a href="loginNotice.do" target="mainFrame" onFocus="this.blur()">发布公告</a>
+        <a href="main_list.html" target="mainFrame" onFocus="this.blur()">业务报表</a>
+      	</div>
+    </c:if>
+    </div>
+    
+</body>
+</html>

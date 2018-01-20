@@ -1,0 +1,8 @@
+package dao;
+
+public interface ClientTrailDao {
+	/**
+	 * 根据员工Id获取当月跟进客源数
+	 */
+	public int findCurrentClientTrailByStaffId(int staffId);
+}

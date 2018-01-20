@@ -1,0 +1,271 @@
+package controller;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.util.WebUtils;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import pojo.Client;
+import pojo.Contract;
+import pojo.HouseApplication;
+import pojo.HouseResource;
+import pojo.Owner;
+import pojo.Staff;
+import service.ClientService;
+import service.ContractService;
+import service.HouseApplicationService;
+import service.HouseService;
+import service.OwnerService;
+import service.StaffService;
+
+@Controller
+public class ContractController {
+	@Autowired
+	private ContractService contractService;
+	@Autowired
+	private ClientService clientService;
+	@Autowired
+	private HouseService houseService;
+	@Autowired
+	private HouseApplicationService houseApplicationService;
+	@Autowired
+	private OwnerService ownerService;
+	/**
+	 * 显示签约页面
+	 * @return
+	 */
+	@RequestMapping("contract")
+	public String showPage(HttpServletRequest req,ModelMap map){
+		HttpSession session = req.getSession();
+		Staff staff = (Staff)session.getAttribute("loginStaff");
+		List<HouseResource> list1 = houseService.findSellHouse(staff.getStaff_id());
+		List<HouseResource> list4 = houseService.findRentHouse(staff.getStaff_id());
+		List<Client> list2 = clientService.findSellClientByStaffId(staff.getStaff_id());
+		List<Client> list3 = clientService.findRentClientByStaffId(staff.getStaff_id());
+		map.put("houseSell", list1);
+		map.put("houseRent", list4);
+		map.put("sellList", list2);
+		map.put("rentList", list3);
+		return "contract";
+	}
+	/**
+	 * 根据id查看出售房源信息
+	 */
+	@ResponseBody
+	@RequestMapping("searchSellHouse")
+	public String searchSellHouseInfo(ModelMap map){
+		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+		Staff staff=(Staff)WebUtils.getSessionAttribute(request, "loginStaff");
+		int houseId = Integer.parseInt(request.getParameter("houseId"));
+		HouseResource house = houseService.findHouseByHouseId(houseId);
+		List<HouseApplication> list = houseApplicationService.findAllHouseAppSelection();
+		HouseApplication houseApplication = list.get(house.getApplication_id()-1);
+		JSONObject json = new JSONObject();
+		
+		json.put("price", house.getTotal_price()/10000);
+		json.put("sign", new Date().toLocaleString());
+		json.put("application",houseApplication);
+		JSONArray array = new JSONArray();
+		array.add(json);
+		return array.toString();
+	}
+	
+	/**
+	 * 根据id查看出租房源信息
+	 */
+	@ResponseBody
+	@RequestMapping("searchRentHouse")
+	public String searchRentHouseInfo(ModelMap map){
+		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+		Staff staff=(Staff)WebUtils.getSessionAttribute(request, "loginStaff");
+		int houseId = Integer.parseInt(request.getParameter("houseId"));
+		HouseResource house = houseService.findHouseByHouseId(houseId);
+		List<HouseApplication> list = houseApplicationService.findAllHouseAppSelection();
+		HouseApplication houseApplication = list.get(house.getApplication_id()-1);
+		JSONObject json = new JSONObject();
+		
+		json.put("price", house.getRent());
+		json.put("sign", new Date().toLocaleString());
+		JSONArray array = new JSONArray();
+		array.add(json);
+		return array.toString();
+	}
+	/**
+	 * 新增买卖签约
+	 * @return
+	 * @throws ParseException 
+	 */
+	@RequestMapping("contract1")
+	public String addSellContract(Integer Client_id,Integer house_id,Float Bid,String Contract_Time,Float Contract_price,String Contract_remark,Integer Contract_type) throws ParseException{
+		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+		Staff staff=(Staff)WebUtils.getSessionAttribute(request, "loginStaff");
+		Contract contract = new Contract();
+		contract.setClient_id(Client_id);
+		contract.setContract_price(Contract_price);
+		contract.setContract_remark(Contract_remark);
+		contract.setContract_Time((new SimpleDateFormat("yyyy-MM-dd")).parse(Contract_Time));
+		contract.setContract_type(Contract_type);
+		contract.setHouse_id(house_id);
+		contract.setStaff_id(staff.getStaff_id());
+		contract.setBid(Bid);
+		contractService.addSellContract(contract);
+		clientService.updateClientStatus(Client_id, 1);
+		houseService.updateHouseStatus(house_id, 2);
+		return "success";
+	}
+	/**
+	 * 新增租赁合同
+	 * @throws ParseException 
+	 */
+	@RequestMapping("contract2")
+	public String addRentContract(Integer Client_id,Integer house_id,String Contract_Time,Float Contract_price,String Contract_remark,Integer Contract_type,Integer lease,String Start_day) throws ParseException{
+		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+		Staff staff=(Staff)WebUtils.getSessionAttribute(request, "loginStaff");
+		Contract contract = new Contract();
+		contract.setClient_id(Client_id);
+		contract.setContract_price(Contract_price);
+		contract.setContract_remark(Contract_remark);
+		contract.setContract_Time((new SimpleDateFormat("yyyy-MM-dd")).parse(Contract_Time));
+		contract.setContract_type(Contract_type);
+		contract.setHouse_id(house_id);
+		contract.setStaff_id(staff.getStaff_id());
+		contract.setLease(lease);
+		contract.setStart_day((new SimpleDateFormat("yyyy-MM-dd")).parse(Start_day));
+		contractService.addRentContract(contract);
+		clientService.updateClientStatus(Client_id, 1);
+		houseService.updateHouseStatus(house_id, 2);
+		return "success";
+	}
+	/**
+	 * 显示签订的出售合同
+	 */
+	@RequestMapping("sellContract")
+	public String searchSellContract(ModelMap map){
+		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+		Staff staff=(Staff)WebUtils.getSessionAttribute(request, "loginStaff");
+		List<Contract> list = contractService.findSellContractById(staff.getStaff_id());
+		map.put("sellList",list);
+		return "sellContract";
+	}
+	
+	/**
+	 * 显示签订的租赁合同
+	 */
+	@RequestMapping("rentContract")
+	public String searchRentContract(ModelMap map){
+		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+		Staff staff=(Staff)WebUtils.getSessionAttribute(request, "loginStaff");
+		List<Contract> list = contractService.findRentContractById(staff.getStaff_id());
+		map.put("rentList",list);
+		return "rentContract";
+	}
+
+	/**
+	 * 分页显示合同列表
+	 */
+	@RequestMapping("findAllContract")
+	public String findAllContract(ModelMap map,Integer pageNo,Integer Contract_type,Integer Contract_id,String Contract_Time ){
+		if(pageNo==null){
+			pageNo=1;
+		}
+		if(Contract_type==null){
+			Contract_type=0;
+		}
+		if(Contract_id==null){
+			Contract_id=0;
+		}
+		if(Contract_Time==null){
+			Contract_Time="";
+		}
+		int min=(pageNo-1)*1+1;
+		int max=pageNo*1;
+		int pageNum=contractService.findNumAllContract(Contract_type, Contract_id, Contract_Time);
+		pageNum=(int)Math.ceil((float)pageNum/1);
+		List<Contract> contractList=contractService.findAllContract(Contract_type, Contract_id, Contract_Time,min,max);
+		map.put("pageNo", pageNo);
+		map.put("pageNum", pageNum);
+		map.put("contractList", contractList);
+		System.err.println(pageNum);
+		System.err.println("单号："+Contract_id);
+		System.err.println("时间："+Contract_Time);
+		System.err.println("模块："+Contract_type);
+		System.err.println(Contract_Time);
+		for(Contract t:contractList){
+			System.err.println("合同状态："+t.getContract_status());
+		}
+		map.put("Contract_id", Contract_id);
+		map.put("Contract_Time", Contract_Time);
+		map.put("Contract_type", Contract_type);
+		return "findAllContract";
+	}
+	/**
+	 * 点击查看合同列表
+	 */
+	@RequestMapping("main_findAllContract")
+	public String mian_findAllContract(){
+		System.out.println("main_findAllContract");
+		return "main_findAllContract";
+	}
+
+	
+	/**
+	 * 查看出售合同具体信息
+	 */
+	@RequestMapping("showSellContract")
+	public String showContract(Integer contract_id,Integer client_id,Integer house_id,Integer staff_id,Integer owner_id,ModelMap map){
+		Client client = clientService.findClientById(client_id);
+		HouseResource house = houseService.findHouseByHouseId(house_id);
+		Owner owner = ownerService.findOwnerById(owner_id);
+		Contract con = contractService.findContractByConId(contract_id);
+		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+		Staff staff=(Staff)WebUtils.getSessionAttribute(request, "loginStaff");
+		map.put("contract", con);
+		map.put("owner",owner);
+		map.put("client", client);
+		map.put("house", house);
+		map.put("staff", staff);
+		return "contractInfo";
+	}
+	/**
+	 * 审核
+	 */
+	@RequestMapping("checkContract")
+	public String checkContract(Integer Contract_status,Integer Contract_id){
+		//改变合同状态
+		contractService.updateContractStatusById(Contract_status, Contract_id);
+		return "main_findAllContract";
+	}
+	/**
+	 * 查看出租合同具体信息
+	 */
+	@RequestMapping("showRentContract")
+	public String showRentContract(Integer contract_id,Integer client_id,Integer house_id,Integer staff_id,Integer owner_id,ModelMap map){
+		Client client = clientService.findClientById(client_id);
+		HouseResource house = houseService.findHouseByHouseId(house_id);
+		Owner owner = ownerService.findOwnerById(owner_id);
+		Contract con = contractService.findContractByConId(contract_id);
+		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+		Staff staff=(Staff)WebUtils.getSessionAttribute(request, "loginStaff");
+		map.put("contract", con);
+		map.put("owner",owner);
+		map.put("client", client);
+		map.put("house", house);
+		map.put("staff", staff);
+		return "rentContractInfo";
+	}
+
+}

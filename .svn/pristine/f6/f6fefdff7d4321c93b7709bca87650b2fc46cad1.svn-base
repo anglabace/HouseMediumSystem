@@ -1,0 +1,8 @@
+package dao;
+
+public interface ContractDao {
+	/**
+	 * ĞÂÔöÇ©Ô¼
+	 */
+	public void addContract();
+}

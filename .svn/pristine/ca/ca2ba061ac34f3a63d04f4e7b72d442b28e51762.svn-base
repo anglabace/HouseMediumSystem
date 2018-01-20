@@ -1,0 +1,13 @@
+package dao;
+
+import java.util.List;
+
+import pojo.Street;
+
+public interface StreetDao {
+	
+	/**
+	 * 通过区id找街集合
+	 */
+	public List<Street> findStreetListByAreaId(int area_Id);
+}

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>   
+<!DOCTYPE mapper   
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"  
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="dao.NeighborHoodDao">
+	<resultMap type="pojo.NeighborHood" id="NeighborHoodType">
+		<id property="neighborHood_Id" column="neighborHood_Id"/>
+		<result property="neighborHood_Name" column="neighborHood_Name"/>
+		<association 
+			property="street"
+			javaType="pojo.Street" 
+			select="dao.StreetDao.findStreetById"
+			column="street_id"
+			>
+		</association>
+	</resultMap>
+	<select id="findAllNeighborHood" resultMap="NeighborHoodType">
+		select n.* from 
+		(select m.*,rownum as rid from 
+       	(select * from NeighborHood   ) m  where 1=1
+		<if test="neighborHood_Name!=null">
+			and neighborHood_Name like #{neighborHood_Name}
+		</if>
+		<if test="1==1">
+			) n where rid between #{min} and #{max} 
+		</if>
+	</select>
+	<select id="findAllNeighborHoodNum" resultType="java.lang.Integer">
+		select count(*) from NeighborHood where neighborHood_Name like #{neighborHood_Name}
+	</select>
+</mapper>

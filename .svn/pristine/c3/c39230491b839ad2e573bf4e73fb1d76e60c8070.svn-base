@@ -1,0 +1,168 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+</head>
+<style>
+	body{
+		color: #394043;
+   		font: 14px "Microsoft Yahei", "Lucida Grande", Verdana, Lucida, Helvetica, Arial, 'Simsun', sans-serif;
+	}
+	.vcon {
+		width:693px;
+		height:728px;
+	    padding: 20px;
+	    
+	}
+	.commTit{
+		height: 40px;
+		position: relative;
+	
+	}
+	.manageBox{
+		width:653px;
+		height: 648px;
+		
+	}
+	.manage{
+		width:653px;
+		height: 608px;
+		
+	}
+	form>ul{
+		padding:0px;
+		
+	}
+	form>ul>li{
+		list-style-type:none;
+		width:653px;
+		height:48px;
+		
+		padding-bottom: 12px;
+	}
+	form>ul>li>label{
+		height:48px;
+		line-height: 48px;
+	}
+	form>ul>li>label>.inputname{
+		height: 33px;
+	    line-height: 33px;
+	    width: 354px;
+	    padding-right: 8px;
+	    padding-left: 8px;
+	    border-radius: 2px;
+	    margin-right: 10px;
+	    font-size: 12px;
+	}
+	i{
+		color:red;
+	}
+	#staffrealName{
+		height: 33px;
+	    line-height: 33px;
+		font-size: 18px;
+	}
+	#redio{
+		width:40px;
+		height:20px;
+	}
+	.savebtn{
+		width:160px;
+		height:50px;
+		background-color: green;
+		font-size:20px;
+		color:#ffffff;
+		font-weight: bold;
+	}
+	.savebtn:hover{
+		margin-left:100px;
+		color:rgba(0,0,255,1);
+	}
+</style>
+<body>
+<!-- js脚本 -->
+<script type="text/javascript" src="js/jquery-3.0.0.js"></script>
+<!-- bootstrap样式 -->
+	<!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+
+
+		<div class="vcon">
+			<div>
+				<h1>基本信息</h1>
+			</div>
+			<div class="manageBox">
+				<div class="manage">
+					<form action="" method="post" onsubmit="return checkMyInfo()">
+						<ul>
+							<li>
+								<label>
+									<i>*</i>
+									<span id="staffrealName">真实姓名&nbsp;&nbsp;&nbsp;</span>
+									<input class="inputname" type="text" name="staffName" placeholder="2-12个汉字,请输入真实姓名,以便客户找到你">
+									<i id="staffNameWarm">提示信息</i>
+								</label>
+							</li>
+							<li>
+								<label>
+									<i>&nbsp;&nbsp;&nbsp;</i>
+									<span id="staffrealName">性别&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+									<input class="redio" type="radio" name="staffName" value="男" checked><span>男</span>
+									<input class="redio" type="radio" name="staffName" value="女"><span>女</span>
+								</label>
+							</li>
+							<li>
+								<label>
+									<i>*</i>
+									<span id="staffrealName">看房电话&nbsp;&nbsp;&nbsp;</span>
+									<input class="inputname" type="text" name="staffName">
+									<i id="staffNameWarm">提示信息</i>
+								</label>
+							</li>
+							<li>
+								<label>
+									<i>&nbsp;&nbsp;</i>
+									<span id="staffrealName">微信&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+									<input class="inputname" type="text" name="staffName">
+									<i id="staffNameWarm">提示信息</i>
+								</label>
+							</li>
+							<li>
+								<label>
+									<i>&nbsp;&nbsp;</i>
+									<span id="staffrealName">扣扣&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+									<input class="inputname" type="text" name="staffName" >
+									<i id="staffNameWarm">提示信息</i>
+								</label>
+							</li>
+							<li>
+								<label>
+									<i>&nbsp;&nbsp;</i>
+									<span id="staffrealName">邮箱&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+									<input class="inputname" type="text" name="staffName" >
+									<i id="staffNameWarm">提示信息</i>
+								</label>
+							</li>
+							<li>
+								<label>
+									<i>*</i>
+									<span id="staffrealName">服务区域&nbsp;&nbsp;&nbsp;</span>
+									<input class="inputname" type="text" name="staffName" >
+									<i id="staffNameWarm">提示信息</i>
+								</label>
+							</li>
+							<li>
+								
+							</li>
+							<li>
+								<input type="submit" class="savebtn" value="保存">
+							</li>
+						</ul>
+					</form>
+				</div>
+			</div>	
+		</div>
+</body>
+</html>

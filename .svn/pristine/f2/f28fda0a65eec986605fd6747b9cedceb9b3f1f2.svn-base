@@ -1,0 +1,25 @@
+package service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import dao.ClientDao;
+import pojo.Client;
+
+/**
+ * Service层负责对DAO层调用
+ * @author Chris
+ *
+ */
+@Service
+public class ClientService {
+	@Autowired
+	private ClientDao clientDao;
+	/**
+	 * 新增客户基本信息
+	 * @param client
+	 */
+	public void addClientBaseInfo(Client client){
+		clientDao.addClientBaseInfo(client);
+	}
+}

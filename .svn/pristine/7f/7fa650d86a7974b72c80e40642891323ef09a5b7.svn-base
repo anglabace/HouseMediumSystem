@@ -1,0 +1,28 @@
+	.tab{
+		width: 1100px;
+		text-align: center;
+		line-height: 30px;
+	}
+	.word1{
+		font-size: 18px;
+		font-weight:bold;
+	}
+	.word2{
+		font-size: 15px;
+	}
+	a{
+		text-decoration:none;
+		font-size:16px;
+	}
+	a:hover{
+		text-decoration:underline;
+		color:red;
+	}
+	.word3{
+		width:74px;
+		height:24px;
+		background-color:#DFF0D8;
+		position:relative;
+		left:105px;
+	}
+	

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration  
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<!-- 打开延迟加载的开关 -->  
+        <setting name="lazyLoadingEnabled" value="true" />  
+        <!-- 将积极加载改为消息加载即按需加载 -->  
+        <setting name="aggressiveLazyLoading" value="false"/>  
+	</settings>
+	
+	
+	<!-- 配置映射类的别名 -->
+	<typeAliases>
+		<typeAlias type="pojo.User" alias="user"/>
+		<typeAlias type="pojo.Client" alias="client"/>
+		<typeAlias type="pojo.HouseResource" alias="houseResource"/>
+		
+	</typeAliases>
+	<!-- 配置映射文件 -->
+	<mappers>
+		<mapper resource="mapper/userMapper.xml"/>
+		<mapper resource="mapper/HouseResourceMapper.xml"/>
+		<mapper resource="mapper/StaffMapper.xml"/>
+		<mapper resource="mapper/ClientMapper.xml"/>
+		<mapper resource="mapper/AreaMapper.xml"/>
+	</mappers>
+
+	
+</configuration>

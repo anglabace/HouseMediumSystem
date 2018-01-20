@@ -1,0 +1,98 @@
+package util;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.coyote.http11.Http11AprProcessor;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+
+import com.aliyun.mns.common.http.ServiceClient.Request;
+import com.aliyuncs.DefaultAcsClient;
+import com.aliyuncs.IAcsClient;
+import com.aliyuncs.dysmsapi.model.v20170525.SendSmsRequest;
+import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
+import com.aliyuncs.exceptions.ClientException;
+import com.aliyuncs.exceptions.ServerException;
+import com.aliyuncs.profile.DefaultProfile;
+import com.aliyuncs.profile.IClientProfile;
+
+/**
+ * 手机短信接口,直接调用sendMessage(String telephone)方法。
+ * @author admin
+ *
+ */
+public class PhoneMessageInterface {
+	public static int size = 3;
+	//调用此方法发送短信验证码
+	public String sendMessage(String telephone) throws ServerException, ClientException{
+	    // 初始化client对象
+	    IAcsClient client = initClient();
+	    // 短信模板请求对象
+	    SendSmsRequest request = null;
+	    // 根据短信模板code来获取不同的短信模板请求对象
+	    String templateCode  = "SMS_98440006";
+	  //生成随机数
+	    int randomNum=(int)(Math.random()*100000);
+	    switch(templateCode)
+	    {
+	        case "SMS_98440006": 
+	            request = getSMS_72780019Message(telephone,randomNum);
+	           // System.out.println(request.getTemplateParam());
+	            break;
+	    }
+	    // 发送短信
+	    SendSmsResponse response = client.getAcsResponse(request);
+	    return ""+randomNum;
+	    // 打印短信的消息
+//	    System.out.println("_____________发送SMS_72780019短信收到的响应信息_______________");
+//	    System.out.println("请求的ID:" + response.getRequestId());
+//	    System.out.println("请求的状态码:" + response.getCode());
+//	    System.out.println("请求的状态码描述:" + response.getMessage());
+//	    System.out.println("请求的回执ID:" + response.getBizId());
+	}
+
+		/**
+		 * 获取IAcsClient对象
+		 * 
+		 * @return
+		 * @throws ClientException
+		 * @throws com.aliyuncs.exceptions.ClientException 
+		 */
+		private IAcsClient initClient() throws ClientException, com.aliyuncs.exceptions.ClientException {
+		    System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
+		    System.setProperty("sun.net.client.defaultReadTimeout", "10000");
+		    // 初始化ascClient需要的几个参数
+		    final String product = "Dysmsapi";// 短信API产品名称
+		    final String domain = "dysmsapi.aliyuncs.com";// 短信API产品域名
+		    // 秘钥key和secret
+		    final String appkey = "LTAIKfomnS8ONfq9";
+		    final String appSecret = "Lgwf0EDbRgzVpRQ1sUCc0bGDNHlG87";
+		    // 初始化ascClient,暂时不支持多region
+		    IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou", appkey, appSecret);
+		    DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou", product, domain);
+		    IAcsClient acsClient = new DefaultAcsClient(profile);
+		    return acsClient;
+		}
+		/**
+		 * 获取SMS_72780019短信模板对应的请求
+		 * 
+		 * @return
+		 */
+		private SendSmsRequest getSMS_72780019Message(String telephone,int randomNum) {
+		     //组装请求对象
+		     SendSmsRequest request = new SendSmsRequest();
+		     //必填:待发送手机号。支持以逗号分隔的形式进行批量调用，批量上限为20个手机号码,批量调用相对于单条调用及时性稍有延迟,验证码类型的短信推荐使用单条调用的方式
+		     request.setPhoneNumbers(telephone);
+		     //必填:短信签名-可在短信控制台中找到
+		     request.setSignName("吴建伟");
+		     //必填:短信模板-可在短信控制台中找到
+		     request.setTemplateCode("SMS_98440006");
+		     //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
+		     request.setTemplateParam("{\"name\":\"Tom\", \"code\":\""+randomNum+"\"}");
+		    
+		     //可选:outId为提供给业务方扩展字段,最终在短信回执消息中将此值带回给调用者
+		     request.setOutId("yourOutId");
+			return request;
+		 }
+		
+}

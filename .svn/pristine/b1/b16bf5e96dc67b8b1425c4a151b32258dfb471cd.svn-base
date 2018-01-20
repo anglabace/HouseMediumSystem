@@ -1,0 +1,25 @@
+package dao;
+
+import java.util.List;
+
+import pojo.Staff;
+
+/**
+ * 员工dao类
+ * @author admin 郑世杰
+ *
+ */
+public interface StaffDao {
+	/**
+	 * 查找其他员工
+	 * @param staff_id
+	 * @return
+	 */
+	public List<Staff> findAnotherStaffs(Staff staff);	
+	
+	//通过员工手机号码查找用户[用于登陆]
+	public Staff findStaffByName(String telephone);
+	//通过员工ID查找员工[用于查看个人基本资料]
+	public Staff findStaffById(int staffId);
+
+}

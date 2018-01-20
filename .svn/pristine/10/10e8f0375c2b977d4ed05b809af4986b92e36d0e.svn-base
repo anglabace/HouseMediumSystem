@@ -1,0 +1,47 @@
+package service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import dao.HouseTrailDao;
+import pojo.HouseTrail;
+
+@Service
+public class HouseTrailService {
+	@Autowired
+	private HouseTrailDao houseTrailDao;
+	
+	/**
+	 * 根据员工Id获取当月跟进房源数
+	 */
+	public int findCurrentHouseTrailByStaffId(int staffId){
+		return houseTrailDao.findCurrentHouseTrailByStaffId(staffId);
+	}
+	/**
+	 * 根据员工Id获取员工跟进的出售房源跟进条数
+	 */
+	public int findSellHouseTrailCountByStaffId(int staffId){
+		return houseTrailDao.findSellHouseTrailCountByStaffId(staffId);
+	}
+	/**
+	 * 分页获取员工跟进的出售房源跟进记录
+	 */
+	public List<HouseTrail> findSellHouseTrail(int staffId,int min,int max){
+		return houseTrailDao.findSellHouseTrail(staffId, min, max);
+	}
+	/**
+	 * 根据员工Id获取员工跟进的出租房源跟进条数
+	 */
+	public int findLeaseHouseTrailCountByStaffId(int staffId){
+		return houseTrailDao.findLeaseHouseTrailCountByStaffId(staffId);
+	}
+	
+	/**
+	 * 分页获取员工跟进的出租房源跟进记录
+	 */
+	public List<HouseTrail> findLeaseHouseTrail(int staffId,int min,int max){
+		return houseTrailDao.findLeaseHouseTrail(staffId, min, max);
+	}
+}

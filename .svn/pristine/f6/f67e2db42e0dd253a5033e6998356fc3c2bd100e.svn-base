@@ -1,0 +1,19 @@
+package service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import dao.HouseTrailDao;
+
+@Service
+public class HouseTrailService {
+	@Autowired
+	private HouseTrailDao houseTrailDao;
+	
+	/**
+	 * 根据员工Id获取当月跟进房源数
+	 */
+	public int findCurrentHouseTrailByStaffId(int staffId){
+		return houseTrailDao.findCurrentHouseTrailByStaffId(staffId);
+	}
+}

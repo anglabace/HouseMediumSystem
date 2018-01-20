@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>   
+<!DOCTYPE mapper   
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"  
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="dao.NeighborHoodDao">
+	<resultMap type="pojo.NeighborHood" id="NeighborHoodType">
+		<id property="neighborHood_Id" column="neighborHood_Id"/>
+		<result property="neighborHood_Name" column="neighborHood_Name"/>
+		<association 
+			property="street"
+			javaType="pojo.Street" 
+			select="dao.StreetDao.findStreetById"
+			column="street_id"
+			>
+		</association>
+	</resultMap>
+	<select id="findAllNeighborHood" resultMap="NeighborHoodType">
+		select * from NeighborHood where 1=1 
+		<if test="neighborHood_Name!=null">
+			and neighborHood_Name like #{neighborHood_Name}
+		</if>
+	</select>
+</mapper>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>   
+<!DOCTYPE mapper   
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"  
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="dao.StreetDao">
+	<resultMap type="pojo.Street" id="streetType">
+		<id property="street_Id" column="street_Id"/>
+		<result property="street_Name" column="street_Name"/>
+		<association 
+			property="area"
+			javaType="pojo.Area"
+			select="dao.AreaDao.findAreaByAreaId"
+			column="area_id"
+			>
+		</association>
+	</resultMap>
+	<!-- 根据区找街道集合 -->
+	<select id="findStreetListByAreaId" resultType="street">
+		select * from street where area_id = #{0}
+	</select>
+	<!-- 铜鼓街道Id查找街道对象 -->
+	<select id="findStreetById" resultMap="streetType">
+		select * from street where street_id=#{0}
+	</select>
+	
+</mapper>

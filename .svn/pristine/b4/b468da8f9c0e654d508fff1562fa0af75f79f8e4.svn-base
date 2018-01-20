@@ -1,0 +1,188 @@
+package controller;
+
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.util.WebUtils;
+
+import pojo.*;
+import service.*;
+
+import util.Page;
+import util.PageUtil;
+
+@Controller
+public class HouseController {
+	@Autowired
+	private HouseService houseService;
+	@Autowired
+	private HouseApplicationService houseApplicationService;
+	@Autowired
+	private HouseAdornmentService houseAdornmentService;
+	@Autowired
+	private HouseDirectionService houseDirectionService;
+	@Autowired
+	private HouseTrailService houseTrailService;
+	//加载添加出售房源页面
+	@RequestMapping("main_AddHouse")
+	public String re(){
+		return "main_AddHouse";
+	}
+		
+	//添加房源信息
+	@RequestMapping("addHouse")
+	public String addHouse(HouseResource h){
+//		HouseResource r = new HouseResource();
+//		r.setFloor_("2");
+		houseService.addHouse(h);
+		return "main_AddHouse";
+	}
+	
+	
+	@RequestMapping("main_viewHouseList")
+	public String viewHouseList(ModelMap map,Integer pageNum){
+		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+		Staff staff=(Staff)WebUtils.getSessionAttribute(request, "loginStaff");
+		int count=houseService.findSellCountHouseResource(staff.getStaff_id());
+		Page page = PageUtil.Page(pageNum, count);
+		//找到所有房屋用途下拉选项框
+		List<HouseApplication> houseAppSelection = houseApplicationService.findAllHouseAppSelection();
+		//找到所有房屋装饰下拉选项框
+		List<HouseAdornment> houseAdorSelection = houseAdornmentService.findAllAdorSelection();
+		//找到所有房屋朝向下拉选项框
+		List<HouseDirection> houseDireSelection = houseDirectionService.findAllHouseDirSelection();
+		//查询该员工负责的出售的房源
+		List<HouseResource> houseList = houseService.findSellHouseResourceInfos(staff.getStaff_id(),page.getMin(),page.getMax());
+		
+		map.put("start", page.getStart());
+		map.put("end", page.getEnd());
+		map.put("totalPage",page.getTotalPage());
+		map.put("count",count);
+		map.put("pageNum", page.getPageNum());
+		map.put("houseList",houseList);
+		map.put("houseAppSelection", houseAppSelection);
+		map.put("houseAdorSelection", houseAdorSelection);
+		map.put("houseDireSelection", houseDireSelection);
+		
+		return "main_viewHouseList";
+	}
+	
+	@RequestMapping("main_viewLeaseHouseList")
+	public String viewLeaseHouseList(ModelMap map,Integer pageNum){
+		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+		Staff staff=(Staff)WebUtils.getSessionAttribute(request, "loginStaff");
+		int count=houseService.findLeaseCountHouseResource(staff.getStaff_id());
+		Page page = PageUtil.Page(pageNum, count);
+		//找到所有房屋用途下拉选项框
+		List<HouseApplication> houseAppSelection = houseApplicationService.findAllHouseAppSelection();
+		//找到所有房屋装饰下拉选项框
+		List<HouseAdornment> houseAdorSelection = houseAdornmentService.findAllAdorSelection();
+		//找到所有房屋朝向下拉选项框
+		List<HouseDirection> houseDireSelection = houseDirectionService.findAllHouseDirSelection();
+		//查询该员工负责的出售的房源
+		List<HouseResource> houseList = houseService.findLeaseHouseResourceInfos(staff.getStaff_id(),page.getMin(),page.getMax());
+		
+		map.put("start", page.getStart());
+		map.put("end", page.getEnd());
+		map.put("totalPage",page.getTotalPage());
+		map.put("count",count);
+		map.put("pageNum", page.getPageNum());
+		map.put("houseList",houseList);
+		map.put("houseAppSelection", houseAppSelection);
+		map.put("houseAdorSelection", houseAdorSelection);
+		map.put("houseDireSelection", houseDireSelection);
+		
+		return "main_viewLeaseHouseList";
+	}
+	
+	@RequestMapping("deleteHouse")
+	public String deleteHouse(Integer houseId){
+		System.out.println("执行了删除业务");
+		System.out.println(houseId);
+		houseService.deleteHouseResource(houseId);
+		return "redirect:main_viewHouseList.do?pageNum=1";
+	}
+	
+	//加载添加出租房源页面
+
+		@RequestMapping("main_addRentHouse")
+		public String rentHouse(){
+			return "main_addRentHouse";
+		}
+		
+	/**
+	 * 查看出售房源跟进列表
+	 */
+		@RequestMapping("main_SellHouseTrailList")
+		public String SellHouseTrailList(ModelMap map,Integer pageNum){
+			HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+			Staff staff=(Staff)WebUtils.getSessionAttribute(request, "loginStaff");
+			int count = houseTrailService.findSellHouseTrailCountByStaffId(staff.getStaff_id());
+			Page page = PageUtil.Page(pageNum, count);
+			List<HouseTrail> houseList = houseTrailService.findSellHouseTrail(staff.getStaff_id(),page.getMin(),page.getMax());
+			
+			map.put("start", page.getStart());
+			map.put("end", page.getEnd());
+			map.put("totalPage",page.getTotalPage());
+			map.put("count",count);
+			map.put("pageNum", page.getPageNum());
+			map.put("houseList",houseList);
+			return "main_SellHouseTrailList";
+		}
+		/**
+		 * 查看出租房源跟进列表
+		 */
+			@RequestMapping("main_LeaseHouseTrailList")
+			public String leaseHouseTrailList(ModelMap map,Integer pageNum){
+				HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+				Staff staff=(Staff)WebUtils.getSessionAttribute(request, "loginStaff");
+				int count = houseTrailService.findLeaseHouseTrailCountByStaffId(staff.getStaff_id());
+				Page page = PageUtil.Page(pageNum, count);
+				List<HouseTrail> houseList = houseTrailService.findLeaseHouseTrail(staff.getStaff_id(),page.getMin(),page.getMax());
+				
+				map.put("start", page.getStart());
+				map.put("end", page.getEnd());
+				map.put("totalPage",page.getTotalPage());
+				map.put("count",count);
+				map.put("pageNum", page.getPageNum());
+				map.put("houseList",houseList);
+				return "main_LeaseHouseTrailList";
+			}
+
+	
+		/*//添加出租房源信息
+		@RequestMapping("addRentHouse")
+		public String addRentHouse(String floor_,String ceil_,String doorplate,double rent,int room,int hall,int toilet,double build_areas,double inside_areas,int tier,int total_tiers,String houseResource_title,String houseResource_describe){
+			Date publishTime = new Date();
+			houseService.addRentHouseResource(42, floor_, ceil_, doorplate, room, hall, toilet, 1, 1, tier, total_tiers, 1000000, build_areas, inside_areas, publishTime, houseResource_title, houseResource_describe, 1, 1, 1, 1, 23, 1, 1, null, rent, 2, 3, 1);
+			return "main_addRentHouse";
+		}*/
+		
+		//加载我带看的出售房源页面  显示我带看的房源
+		@RequestMapping("myLookSellHouse")
+		public String myLook1(HttpServletRequest req,ModelMap map){
+			HttpSession session = req.getSession();
+			Staff staff = (Staff)session.getAttribute("loginStaff");
+			List list = houseService.findSellHouse(staff.getStaff_id());
+			map.put("myLook1List", list);
+			return "myLookSellHouse";
+		}
+		//加载我带看的出租房源页面  显示我带看的房源
+		@RequestMapping("myLookRentHouse")
+		public String myLook2(HttpServletRequest req,ModelMap map){
+			HttpSession session = req.getSession();
+			Staff staff = (Staff)session.getAttribute("loginStaff");
+			List list = houseService.findRentHouse(staff.getStaff_id());
+			map.put("myLook2List", list);
+			return "myLookRentHouse";
+		}
+}

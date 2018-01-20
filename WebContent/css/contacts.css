@@ -1,0 +1,29 @@
+
+	.tab{
+		width: 1000px;
+		text-align: center;
+		line-height: 30px;
+	}
+	.rows{
+		height: 30px;
+	}
+	.title{
+		font-weight: bold;
+		font-size: 14px;
+	}
+	.folio{
+		text-decoration: none;
+		display:inline-block;
+		height: 30px;
+		width: 30px;
+		border: 1px solid rgba(19,58,124,1.00);
+		margin-top: 20px;
+		margin-left: 50px;
+		text-align: center;
+		line-height: 30px;
+		position: relative;
+		left: 200px;
+	}
+	.foliostyle{
+		background-color:silver;
+	}

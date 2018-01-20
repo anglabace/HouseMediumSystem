@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>   
+<!DOCTYPE mapper   
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"  
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="dao.CityDao">
+	<resultMap type="pojo.City" id="cityType">
+		<id property="city_Id" column="city_Id"/>
+		<result property="city_Name" column="city_Name"/>
+	</resultMap>
+	<select id="findCityByCityId" resultMap="cityType">
+		select * from city where city_Id=#{0}
+	</select>
+</mapper>

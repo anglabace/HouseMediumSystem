@@ -1,0 +1,271 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+</head>
+<script type="text/javascript" src="js/jquery-1.8.0.js"></script>
+<style>
+	.textStyle{
+		display:inline-block;
+		height: 31px;
+		padding-left:6px;
+		font-size: 14px;
+		line-height: 1.42857143;
+		color: #555;
+		background-color: #fff;
+		background-image: none;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+		transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+		box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	}
+	.tab{
+		font-size: 12px;
+		width: 800px;
+	}
+	.contain{
+		z-index: 2;
+		position: relative;
+	}
+	.showText{
+		position:relative;
+		display: none;
+		z-index: 3;
+	}
+	.title{
+		display:inline-block;
+	}
+</style>
+<body class="body">
+
+	<div class="showHouseInfo showText">
+		<table>
+			<tr>
+				<td>房源编号</td>
+				<td>楼盘名称</td>
+				<td>户型</td>
+				<td>售价</td>
+				<td>面积</td>
+				<td>楼层</td>
+				<td>房源状态</td>
+				<td>发布人</td>
+			</tr>
+			<c:forEach var="house" items="${houseList}">
+				<tr>
+					<td><input type="radio" name="house" value="${house.houseResource_id}">${house.houseResource_id}</td>
+					<td>${house.neighborHood.neighborHood_Name}</td>
+					<td>${house.room}&nbsp;室&nbsp;${house.hall}&nbsp;厅&nbsp;${house.toilet}&nbsp;卫</td>
+					<td>${house.total_price/10000}</td>
+
+					<td>${house.build_areas}</td>
+					<td>${house.tier}&nbsp;层</td>
+					<td>
+						<c:if test="${house.status==1}">
+							出租中
+						</c:if>&nbsp;
+						<c:if test="${house.status==2}">
+							已下架
+						</c:if>&nbsp;
+						<c:if test="${house.status==3}">
+							出售中
+						</c:if>&nbsp;
+						<c:if test="${house.status==4}">
+							已成交
+						</c:if>&nbsp;
+					</td>
+					<td>${loginStaff.staff_name}</td>
+				</tr>
+			</c:forEach>
+		</table>
+		<div class="btn2">确认</div>
+	</div>
+	<div class="showClientInfo showText">
+		<table>
+				<tr>
+					<td>客户编号</td>
+					<td>客户姓名</td>
+					<td>负责人</td>
+					<td>状态</td>
+					<td>客户类型</td>
+					<td>需求城市</td>
+					<td>价格</td>
+				</tr>
+			<c:forEach var="client" items="${clientList}">
+				<tr>
+					<td><input type="radio" name="client" value="${client.client_id}">${client.client_id}</td>
+					<td>${client.client_name}</td>
+					<td>${loginStaff.staff_name}</td>
+					<td>${client.client_status}</td>
+					<td>
+						<c:forEach var="req" items="${client.clientReqList}">
+							${req.client_type}
+						</c:forEach>
+					</td>
+					<td>
+						<c:forEach var="req" items="${client.clientReqList}">
+							${req.siteRequirement}/
+						</c:forEach>
+					</td>
+					<td>
+						<c:forEach var="req" items="${client.clientReqList}">
+							${req.min_price}&nbsp;-
+							${req.max_price}&nbsp;/
+						</c:forEach>
+					</td>
+				</tr>
+			</c:forEach>
+		</table>
+		<div class="btn1">确认</div>
+	</div>
+	
+	<!-- 出售 -->
+	<div class="contain">
+		<div class="title2">出售合同</div>    <span class="pack2">收起</span>
+		<div class="content2">
+			<form action="contract1.do" method="post">
+			<table class="tab">
+				<tr>
+					<td>签约客源：</td>
+					<td>
+						<div class="click1"><input class="textStyle" id="client" type="text" name="Client_id" placeholder="请选择客源" readonly="readonly"></div>
+					</td>
+					<td>签约房源：</td>
+					<td>
+						<div class="click2"><input class="textStyle" id="house" type="text" name="house_id" placeholder="请选择房源" readonly="readonly"></div>
+					</td>
+				</tr>
+				<tr>
+					<td>成交价：</td>
+					<td><input class="textStyle" id="transaction" type="text" name="Bid">万元</td>
+					<td>签约时间：</td>
+					<td><input class="textStyle" id="sign" type="text" name="Contract_Time"></td>
+				</tr>
+				<tr>
+					<td>合同价：</td>				
+					<td colspan="3"><input class="textStyle" id="contract" type="text" name="Contract_price">万元</td>		
+				</tr>
+				<tr>
+					<td>买房备注</td>
+					<td colspan="3"><input class="textStyle" type="text" name="Contract_remark"></td>
+				</tr>		
+			</table>
+			<input type="hidden" value="2" name="Contract_type">
+			<input type="submit" value="保存">
+		</form>
+		</div>
+	</div>
+	<!-- 出租 -->
+	<div class="contain">
+		<div class="title1">出租合同</div>    <span class="pack1">收起</span>
+		<div class="content1">
+			<form action="contract2.do" method="post">
+				<table class="tab">
+				<tr>
+					<td>签约客源：</td>
+					<td>
+						<div class="click3"><input class="textStyle" id="client1" type="text" name="Client_id" placeholder="请选择客源" readonly="readonly"></div>
+					</td>
+					<td>签约房源：</td>
+					<td>
+						<div class="click4"><input class="textStyle" id="house1" type="text" name="house_id" placeholder="请选择房源" readonly="readonly"></div>
+					</td>
+				</tr>
+				<tr>
+					<td>签约时间：</td>
+					<td colspan="3"><input class="textStyle" id="sign" type="text" name="Contract_Time"></td>
+				</tr>
+				<tr>
+					<td>出租开始</td>
+					<td><input class="textStyle"  type="text" name="Start_day"></td>
+					<td>租期</td>				
+					<td><input class="textStyle"  type="text" name="lease"></td>		
+				</tr>
+				<tr>
+					<td>租金</td>
+					<td><input class="textStyle"  type="text" name="Contract_price">元/月</td>
+					<td>租房备注</td>
+					<td><input class="textStyle" type="text" name="Contract_remark"></td>
+				</tr>
+			</table>
+				<input type="hidden" value="2" name="Contract_type"> 
+				<input type="submit" value="提交">
+			</form>
+		</div>
+	</div>
+</body>
+<script>
+	var client = document.getElementsByName("client");
+	var house = document.getElementsByName("house");
+	var ind;
+	var $c;
+	var $h;
+	$(".click1").click(function(){
+		$(".showClientInfo").css("display","block");
+		$c = $(".click1");
+	})
+	$(".click2").click(function(){
+		$(".showHouseInfo").css("display","block");
+		$h = $(".click2");
+	})
+	$(".click3").click(function(){
+		$(".showClientInfo").css("display","block");
+		$c = $(".click3");
+	})
+	$(".click4").click(function(){
+		$(".showHouseInfo").css("display","block");
+		$h = $(".click4");
+	})
+
+	$(".btn1").click(function(){
+		for(var i=0;i<client.length;i++){
+			if(client[i].checked){
+				$c.children().val(client[i].value);
+			}
+		}
+		$(".showClientInfo").css("display","none");
+	})
+	$(".btn2").click(function(){
+			for(var i=0;i<house.length;i++){
+				if(house[i].checked){
+					$h.children().val(house[i].value);
+					$.ajax({
+						url:"searchHouse.do",
+						type:"post",
+						data:{"houseId":house[i].value},
+						dataType:"JSON",
+						success:function(data){
+							data = eval("("+data+")");
+							$("#transaction").val(data[0].price);
+							$("#contract").val(data[0].price);
+							$("#sign").val(data[0].sign);
+						}
+					})
+				}
+			}
+			$(".showHouseInfo").css("display","none");
+		})
+	
+	$(".pack1").click(function(){
+		if($(".content1").css("display")=="none"){
+			$(".content1").css("display","block");
+			$(this).html("收起");
+		}else if($(".content1")){
+			$(".content1").css("display","none");
+			$(this).html("展开");
+		}
+	})
+	$(".pack2").click(function(){
+		if($(".content2").css("display")=="none"){
+			$(".content2").css("display","block");
+			$(this).html("收起");
+		}else if($(".content2")){
+			$(".content2").css("display","none");
+			$(this).html("展开");
+		}
+	})
+</script>
+</html>

@@ -1,0 +1,31 @@
+package dao;
+
+import java.util.List;
+
+import pojo.*;
+
+public interface HouseResourceDao {
+
+	/**
+	 * 添加房源信息
+	 * @param h
+	 */
+	public void addHouse(HouseResource h);
+	/**
+	 * 根据员工Id查询当月新增出售房
+	 */
+	public int findCurrentBuyHouseByStaffId(int staffId);
+	/**
+	 * 根据员工Id查询当月新增出租房
+	 */
+	public int findCurrentLeaseHouseByStaffId(int staffId);
+	
+	/**
+	 * 根据员工Id查询该员工半年来的新增房源数
+	 */
+	public int findSemesterCountHouseByStaffId(int staffId);
+	/**
+	 * 根据员工id查询房源信息
+	 */
+	public List<HouseResource> findHouseResourceInfos(int staffId);
+}

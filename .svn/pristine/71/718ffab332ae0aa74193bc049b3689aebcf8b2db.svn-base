@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>   
+<!DOCTYPE mapper   
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"  
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="dao.OrderFormDao">
+	<resultMap type="pojo.OrderForm" id="orderFormType">
+			<id property="orderForm_id" column="orderForm_id"/>
+			<result property="contract_id" column="contract_id"/>
+			<result property="orderForm_time" column="orderForm_time"/>
+			<result property="orderForm_status" column="orderForm_status"/>
+	</resultMap>
+	<select id="findAllOrderFormByStaffId" resultType="java.lang.Integer">
+	select count(*) from OrderForm where OrderForm_status=1 and Contract_id in (select Contract_id from contract where Staff_id=#{0} and Contract_status=1) 
+	</select>
+	<select id="findBuyOrderFormByStaffId" resultType="java.lang.Integer">
+	select count(*) from OrderForm where OrderForm_status=1 and Contract_id in (select Contract_id from contract where Staff_id=#{0} and Contract_status=1 and houseResource_id in (select houseResource_id from HouseResource where rent=2)) 
+	</select>
+</mapper>

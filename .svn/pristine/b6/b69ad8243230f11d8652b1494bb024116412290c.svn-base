@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>   
+<!DOCTYPE mapper   
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"  
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="dao.AreaDao">
+	<resultMap type="pojo.Area" id="areaType">
+			<id property="area_Id" column="area_Id"/>
+			<result property="area_Name" column="area_Name"/>
+			<result property="city_id" column="city_id"/>
+	</resultMap>
+	<!-- 通过区域Id返回区域对象-->
+	<select id="findAreaById" resultMap="areaType">
+		select * from Area	where area_Id=#{0}
+	</select>
+</mapper>

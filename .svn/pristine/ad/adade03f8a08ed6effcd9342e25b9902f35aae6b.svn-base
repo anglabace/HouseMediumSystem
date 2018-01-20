@@ -1,0 +1,64 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt_rt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+</head>
+<style>
+	.tab{
+		width: 1000px;
+		text-align: center;
+		line-height: 30px;
+	}
+	a{
+		text-decoration: none;
+	}
+</style>
+<script type="text/javascript" src="js/jquery-1.8.0.js"></script>
+<body>
+	<table class="tab" border="1" bordercolor="#DDDDDD"  cellpadding="0" cellspacing="0">
+		<tr>
+			<td>合同编号</td>
+			<td>物业地址</td>
+			<td>业主姓名</td>			
+			<td>面积</td>
+			<td>价格(万元)</td>
+			<td>客户姓名</td>
+			<td>登记日</td>
+			<td>负责人</td>
+			<td>状态</td>
+			<td>操作</td>
+		</tr>
+		<c:forEach var="con" items="${sellList}">
+			<input type="hidden" value="${con.house_id}" id="house">
+			<input type="hidden" value="${con.client_id}" id="client">
+			<tr>
+				<td>${con.contract_id}</td>
+				<td>${con.house.neighborHood.neighborHood_Name}</td>
+				<td>${con.house.owner.owner_id}</td>
+				<td>${con.house.build_areas}</td>
+				<td>${con.house.total_price/10000}</td>
+				<td>${con.client.client_name}</td>
+				<td><fmt:formatDate value="${con.contract_Time}" pattern="yyyy-MM-dd"/></td>
+				<td>${loginStaff.staff_name}</td>
+				<td>
+				<c:if test="${con.contract_status == 1}">
+					未审核
+				</c:if>
+				<c:if test="${con.contract_status == 2}">
+					已通过
+				</c:if>
+				<c:if test="${con.contract_status == 3}">
+					未通过
+				</c:if>
+				</td>
+				<td><a href="showSellContract.do?client_id=${con.client.client_id}&house_id=${con.house.houseResource_id}&owner_id=${con.house.owner.owner_id}&staff_id=${loginStaff.staff_id}&contract_id=${con.contract_id}">查看具体信息</a></td>
+			</tr>
+		</c:forEach>
+	</table>
+</body>
+</html>

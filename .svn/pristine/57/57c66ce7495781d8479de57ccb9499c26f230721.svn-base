@@ -1,0 +1,45 @@
+package service;
+
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import dao.ClientTrailDao;
+import pojo.ClientTrail;
+
+@Service
+public class ClientTrailService {
+	@Autowired
+	private ClientTrailDao clientTrailDao;
+	
+	/**
+	 * 根据员工Id获取当月跟进客源数
+	 */
+	public int findCurrentClientTrailByStaffId(int staffId){
+		return clientTrailDao.findCurrentClientTrailByStaffId(staffId);
+	}
+	
+	/**
+	 * 添加客户跟进记录
+	 */
+	public void addClientTrail(ClientTrail clientTrail){
+		clientTrailDao.addClientTrail(clientTrail);
+	}
+	
+	/**
+	 * 根据员工id查询该员工负责的客户跟进记录
+	 */
+	public List<ClientTrail> findAllClientTrailByStaffId(int staff_id){
+		return clientTrailDao.findAllClientTrailByStaffId(staff_id);
+	};
+	
+	/**
+	 * 根据客户跟进时间删除客户跟进记录
+	 */
+	public void deleteSingleClientTrailById(int clientTrail_id){
+		clientTrailDao.deleteSingleClientTrailById(clientTrail_id);
+	}
+}

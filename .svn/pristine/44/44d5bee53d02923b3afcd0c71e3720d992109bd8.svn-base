@@ -1,0 +1,11 @@
+package dao;
+
+import pojo.CheckAttendance;
+
+public interface CheckAttendanceDao {
+
+	/**
+	 * 添加一条考勤记录
+	 */
+	public void addAttendance(int staff_id);
+}
